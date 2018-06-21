@@ -57,6 +57,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AbortValues.cs" />
     <Compile Include="BPB_Editor.cs" />
     <Compile Include="BPB_Flight.cs" />
     <Compile Include="BPB_VesselModule.cs" />
@@ -65,7 +66,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AssemblyVersion.tt</DependentUpon>
     </Compile>
-    <Compile Include="Module_BobsAbortBox.cs" />
+    <Compile Include="Editor.cs" />
+    <Compile Include="Flight.cs" />
+    <Compile Include="Module_BobsPanicBox.cs" />
     <Compile Include="Module_BobsExplosionDetector.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

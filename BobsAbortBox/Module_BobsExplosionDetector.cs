@@ -16,7 +16,9 @@ namespace BobsPanicBox
             {
                 if (vm.armed && vm.explosiveTriggerEnabled)
                 {
-                    Log.Info("Explosion Detected");
+                    Log.Info("Explosion Detected, part: " + this.part.partInfo.title);
+                    ScreenMessages.PostScreenMessage("<color=red>ABORTING - Explosion Detected!</color> - "  + this.part.partInfo.title, 10f);
+
                     vm.SetAllActive(true, false, "Aborted! Explosion Detected");
                     vm.TriggerAbort();
                 }

@@ -9,14 +9,12 @@ namespace BobsPanicBox
     // http://forum.kerbalspaceprogram.com/index.php?/topic/147576-modders-notes-for-ksp-12/#comment-2754813
     // search for "Mod integration into Stock Settings
 
-    //   HighLogic.CurrentGame.Parameters.CustomParams<IFILS>()
-
-    public class BAB_Options : GameParameters.CustomParameterNode
+    public class BPB_Options : GameParameters.CustomParameterNode
     {
         public override string Title { get { return "Default Settings"; } }
         public override GameParameters.GameMode GameMode { get { return GameParameters.GameMode.ANY; } }
-        public override string Section { get { return "Bob's Abort Box"; } }
-        public override string DisplaySection { get { return "Bob's Abort Box"; } }
+        public override string Section { get { return "Bob's Panic Box"; } }
+        public override string DisplaySection { get { return "Bob's Panic Box"; } }
         public override int SectionOrder { get { return 1; } }
         public override bool HasPresets { get { return false; } }
 
@@ -35,36 +33,19 @@ namespace BobsPanicBox
             toolTip = "Not implemented")]
         public bool allowChangeInFlight = false;
 
-       
 
-
-
-        public override void SetDifficultyPreset(GameParameters.Preset preset)
-        {
-
-        }
-
-        public override bool Enabled(MemberInfo member, GameParameters parameters)
-        {
-            return true;
-        }
-        public override bool Interactible(MemberInfo member, GameParameters parameters)
-        {
-            return true;
-        }
-
-        public override IList ValidValues(MemberInfo member)
-        {
-            return null;
-        }
+        public override void SetDifficultyPreset(GameParameters.Preset preset) { }
+        public override bool Enabled(MemberInfo member, GameParameters parameters) { return true; }
+        public override bool Interactible(MemberInfo member, GameParameters parameters) { return true; }
+        public override IList ValidValues(MemberInfo member) { return null; }
     }
 
-    public class BAB_Options2 : GameParameters.CustomParameterNode
+    public class BPB_Options2 : GameParameters.CustomParameterNode
     {
         public override string Title { get { return "Default Abort Parameters"; } }
         public override GameParameters.GameMode GameMode { get { return GameParameters.GameMode.ANY; } }
-        public override string Section { get { return "Bob's Abort Box"; } }
-        public override string DisplaySection { get { return "Bob's Abort Box"; } }
+        public override string Section { get { return "Bob's Panic Box"; } }
+        public override string DisplaySection { get { return "Bob's Panic Box"; } }
         public override int SectionOrder { get { return 2; } }
         public override bool HasPresets { get { return false; } }
 
@@ -97,7 +78,7 @@ namespace BobsPanicBox
         public int maxAoA = 20;
 
         [GameParameters.CustomIntParameterUI("Default disable after (secs)", minValue = 1, maxValue = 600,
-            toolTip = "Disable Bob's Abort Box after this many minutes of flight")]
+            toolTip = "Disable Bob's Panic Box after this many minutes of flight")]
         public int disableAfter = 600;
 
         [GameParameters.CustomIntParameterUI("Action after timeout", minValue = 0, maxValue = 10,
@@ -109,7 +90,7 @@ namespace BobsPanicBox
        toolTip = "Trigger this action after an abort, 0 = none")]
         public int postAbortAction = 0;
 
-        [GameParameters.CustomIntParameterUI("Post-Abort PAA Delay (secs)", minValue = 1, maxValue = 600,
+        [GameParameters.CustomIntParameterUI("Post-Abort PAA Delay (secs)", minValue = 1, maxValue = 60,
            toolTip = "Delay after an abort before triggering the Post-Abort Action")]
         public int postAbortDelay = 10;
 
@@ -118,35 +99,19 @@ namespace BobsPanicBox
         public bool delayPostAbortUntilSafe = false;
 
 
-
-
-        public override void SetDifficultyPreset(GameParameters.Preset preset)
-        {
-
-        }
-
-        public override bool Enabled(MemberInfo member, GameParameters parameters)
-        {
-            return true;
-        }
-        public override bool Interactible(MemberInfo member, GameParameters parameters)
-        {
-            return true;
-        }
-
-        public override IList ValidValues(MemberInfo member)
-        {
-            return null;
-        }
+        public override void SetDifficultyPreset(GameParameters.Preset preset) { }
+        public override bool Enabled(MemberInfo member, GameParameters parameters) { return true; }
+        public override bool Interactible(MemberInfo member, GameParameters parameters) { return true; }
+        public override IList ValidValues(MemberInfo member) { return null; }
     }
 
 
-    public class BAB_UI_Options : GameParameters.CustomParameterNode
+    public class BPB_UI_Options : GameParameters.CustomParameterNode
     {
         public override string Title { get { return "Control Options"; } }
         public override GameParameters.GameMode GameMode { get { return GameParameters.GameMode.ANY; } }
-        public override string Section { get { return "Bob's Abort Box"; } }
-        public override string DisplaySection { get { return "Bob's Abort Box"; } }
+        public override string Section { get { return "Bob's Panic Box"; } }
+        public override string DisplaySection { get { return "Bob's Panic Box"; } }
         public override int SectionOrder { get { return 3; } }
         public override bool HasPresets { get { return false; } }
 
@@ -154,28 +119,14 @@ namespace BobsPanicBox
         [GameParameters.CustomParameterUI("Window via Part Action Menu")]
         public bool pamWindow = false;
 
-
         [GameParameters.CustomParameterUI("Toolbar Button")]
         public bool useToolbar = false;
 
-        public override void SetDifficultyPreset(GameParameters.Preset preset)
-        {
-
-        }
-
-        public override bool Enabled(MemberInfo member, GameParameters parameters)
-        {
-            return true;
-        }
-        public override bool Interactible(MemberInfo member, GameParameters parameters)
-        {
-            return true;
-        }
-
-        public override IList ValidValues(MemberInfo member)
-        {
-            return null;
-        }
+        
+        public override void SetDifficultyPreset(GameParameters.Preset preset) { }
+        public override bool Enabled(MemberInfo member, GameParameters parameters) { return true; }
+        public override bool Interactible(MemberInfo member, GameParameters parameters) { return true; }
+        public override IList ValidValues(MemberInfo member) { return null; }
 
     }
 }

@@ -12,6 +12,7 @@ namespace BobsPanicBox
         Vessel lastActiveVessel;
         BPB_VesselModule vm;
 
+        bool printed = false;
 
         public void Update()
         {
@@ -19,41 +20,44 @@ namespace BobsPanicBox
             {
                 Vessel v = FlightGlobals.ActiveVessel;
 
+                if (!printed)
+                {
+                    Log.Info("BPB_Flight, vessel.id: " + v.id);
+                    printed = true;
+                }
+
+
                 if (v != lastActiveVessel)
                 {
                     lastActiveVessel = v;
                     vm = v.GetComponent<BPB_VesselModule>();
                 }
 
-                if (vm.armed)
+                if (vm.armed && !vm.aborted)
                 {
                     if (v.missionTime <= vm.disableAfter)
                     {
                         if (v.verticalSpeed < vm.vertSpeed && vm.vertSpeedTriggerEnabled)
                         {
-                            if (!vm.aborted )
-                            {
+                           
                                 ScreenMessages.PostScreenMessage("<color=red>ABORTING - AAS Negative Vertical Velocity Detected!</color> - " + v.verticalSpeed, 10f);
                                 v.ActionGroups.SetGroup(KSPActionGroup.Abort, true);
                                 vm.SetAllActive(true, false, "Aborted! Negative Vertical Velocity Detected");
-                            }
+                           
                         }
 
                         if (v.geeForce > vm.gForceTrigger && vm.gForceTriggerEnabled)
                         {
-                            if (!vm.aborted )
-                            {
                                 ScreenMessages.PostScreenMessage("<color=red>ABORTING - AAS High G-Force Detected!</color> - " + v.geeForce, 10f);
                                 v.ActionGroups.SetGroup(KSPActionGroup.Abort, true);
                                 vm.SetAllActive(true, false, "Aborted! High G-Force Detected");
-                            }
+                         
                         }
 
-                        Log.Info("BAB_Flight.Update, vm.exceedingAoA: " + vm.exceedingAoA);
                         if (vm.exceedingAoA && v.GetSrfVelocity().magnitude > 10 && v.missionTime > 1)
                         {
                             var v3d1 = Vector3d.Angle(v.GetTransform().up, v.GetSrfVelocity());
-                            Log.Info("BAB_Flight.Update, v3d1: " + v3d1);
+                            Log.Info("BPB_Flight.Update, v3d1: " + v3d1);
                             if (v3d1 > vm.maxAoA)
                             {
                                 Log.Info("v3d1: " + v3d1 + ", v.GetSrfVelocity().magnitude: " + v.GetSrfVelocity().magnitude + ", vm.maxAoA: " + vm.maxAoA);
@@ -66,8 +70,8 @@ namespace BobsPanicBox
                     } else
                     {
                         vm.armed = false;
-                        ScreenMessages.PostScreenMessage("Bob's Abort Box disabled due to timeout", 10f);
-                        Log.Info("Bob's Abort Box disabled due to timeout");
+                        ScreenMessages.PostScreenMessage("Bob's Panic Box disabled due to timeout", 10f);
+                        Log.Info("Bob's Panic Box disabled due to timeout");
                         if (vm.actionAfterTimeout > 0)
                         {
                             var kg = GetActionGroup((int)vm.actionAfterTimeout);
@@ -76,19 +80,24 @@ namespace BobsPanicBox
                         }
                     }
                 }
+                
                 if (vm.aborted && vm.postAbortAction != 0 && !vm.postAbortActionCompleted)
                 {
+                    
                     if (vm.abortTime + vm.postAbortDelay <= v.missionTime)
                     {
                         // Check for safechute
                         // check for chutes
                         var pa = v.FindPartModulesImplementing<ModuleParachute>();
+                        Log.Info("Parachutes found: " + pa.Count);
                         if (pa != null && pa.Count > 0)
                         {
-                            foreach (var chute in pa)
+                            foreach (ModuleParachute chute in pa)
                             {
                                 if (chute.deploymentState == ModuleParachute.deploymentStates.STOWED && FlightGlobals.ActiveVessel.atmDensity > 0)
                                 {
+                                    Log.Info("chute.deploySafe: " + chute.deploySafe);
+
                                     if (chute.deploySafe == "Safe")
                                     {
                                         var kg = GetActionGroup(vm.postAbortAction);
