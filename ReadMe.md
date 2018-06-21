@@ -40,13 +40,14 @@ That was as far as he got, because:
 
 KAAABOOOMMMMMMM!!!!!
 
-As the rocket exploded!
+as the rocket exploded!
 
 Later, in the revival chamber, as they were being reconstituted (again), Bob decided that he wasn't going 
 to do that again.  Next time, he decided, he wasn't going to leave it in Jebediah's hands.
 
-A few weeks later, the next launch.  Same rocket, they were assured that they had fixed the problem.
-Jebediah & Bill believed them without question, but Bob insisted that they install his new invention
+A few weeks later, the next launch.  Same rocket, they were assured by the technicians  that they had fixed the problem.
+As usual, the two daredevils, Jebediah & Bill believed them without question, but Bob wasn't so sure and insisted that they 
+install his new invention without telling .  He knew that Jebediah would throw a fit if he knew about it.
 
 3, 2, 1, Ignition and Liftoff again
 

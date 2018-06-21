@@ -25,13 +25,13 @@
 # 0:1.3
 
 # 1:GAMEDIR, VERSIONFILE [, GITHUBREPO ]
-1:KerbalHotSeat, KerbalHotSeat.version
+1:BobsPanicBox, BobsPanicBox.version
 
 # 2:PROJNAME, PROJFILE, VERSIONFILE, PLUGINSFOLDER
-2:KerbalHotSeat,KerbalHotSeat/KerbalHotSeat.csproj,KerbalHotSeat.version,GameData/KerbalHotSeat/Plugins
+2:BobsPanicBox,BobsPanicBox/BobsPanicBox.csproj,BobsPanicBox.version,GameData/BobsPanicBox/Plugins
 
 # 3:SOURCEFILE, DESTDIR
-3:KerbalHotSeat.version,GameData/KerbalHotSeat
+3:BobsPanicBox.version,GameData/BobsPanicBox
 #3:LICENSE.md,GameData/KerbalHotSeat
 #3:README.md,GameData/KerbalHotSeat
 
