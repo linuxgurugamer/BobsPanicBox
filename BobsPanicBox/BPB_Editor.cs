@@ -6,6 +6,7 @@ using UnityEngine;
 
 using KSP.UI.Screens;
 using ToolbarControl_NS;
+using ClickThroughFix;
 
 namespace BobsPanicBox
 {
@@ -30,7 +31,7 @@ namespace BobsPanicBox
         const int HEIGHT = 200;
 
         Rect bpbWinRect = new Rect((Screen.width - WIDTH) / 2, (Screen.height - HEIGHT) / 2, WIDTH, HEIGHT);
-        internal AbortValues abortValues;
+        internal AbortValues abortValues = new AbortValues();
 
         internal const string MODID = "BobsPanicBox_NS";
         internal const string MODNAME = "Bob's Panic Box";
@@ -64,7 +65,7 @@ namespace BobsPanicBox
             if (visible)
             {
                 GUI.skin = HighLogic.Skin;
-                bpbWinRect = GUILayout.Window(23874244, bpbWinRect, BPB_Window, "Bob's Panic Box");
+                bpbWinRect = ClickThruBlocker.GUILayoutWindow(23874244, bpbWinRect, BPB_Window, "Bob's Panic Box");
             }
         }
 
@@ -90,7 +91,9 @@ namespace BobsPanicBox
                     var m = p.FindModuleImplementing<Module_BobsPanicBox>();
                     if (m != null)
                     {
-                        EnableWindow(Module_BobsPanicBox.editorInfo.av);
+                        if (m.av == null)
+                            Log.Info("in ToggleOn, m.av is null");
+                        EnableWindow(m.av);
                         return;
                     }
                 }
@@ -134,6 +137,13 @@ namespace BobsPanicBox
 
         void BPB_Window(int windowId)
         {
+            if (abortValues == null)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("abortValues is null");
+                GUILayout.EndHorizontal();
+                return;
+            }
             GUILayout.BeginHorizontal();
             abortValues.armed = GUILayout.Toggle(abortValues.armed, "Active");
             GUILayout.EndHorizontal();
@@ -215,10 +225,10 @@ namespace BobsPanicBox
             GUILayout.EndHorizontal();
             GUILayout.Space(10);
             GUILayout.BeginHorizontal();
-
+            GUI.enabled = true;
             if (GUILayout.Button("Reset all values to defaults", GUILayout.Width(250)))
             {
-                ResetToDefault(abortValues);
+                ResetToDefault(ref abortValues);
             }
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
@@ -234,8 +244,9 @@ namespace BobsPanicBox
         }
 
 
-        internal static void ResetToDefault(AbortValues abortValues)
+        internal static void ResetToDefault(ref AbortValues abortValues)
         {
+            Log.Info("BPB_Editor.ResetToDefault, loadedScene: " + HighLogic.LoadedScene);
             if (HighLogic.LoadedSceneIsFlight)
                 abortValues.armed = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().activeAtLaunch;
             else
@@ -245,6 +256,7 @@ namespace BobsPanicBox
                 if (HighLogic.LoadedSceneIsEditor && EditorDriver.editorFacility == EditorFacility.SPH)
                     abortValues.armed = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().activeInSPH;
             }
+            Log.Info("ResetToDefault, armed: " + abortValues.armed);
             abortValues.vertSpeedTriggerEnabled = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().negativeVelDetection;
             abortValues.gForceTriggerEnabled = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().highGDetection;
             abortValues.vertSpeed = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().defaultNegVel;

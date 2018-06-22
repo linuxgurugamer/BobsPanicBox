@@ -10,7 +10,7 @@ namespace BobsPanicBox
     public class Module_BobsPanicBox : PartModule
     {
         internal BPB_VesselModule vm;
-        AbortValues av;
+        internal AbortValues av;
 
         static internal Editor editorInfo = new Editor();
         internal Flight flightInfo;
@@ -80,6 +80,7 @@ namespace BobsPanicBox
 
         public void SetAllValues(AbortValues a)
         {
+            this.armed = a.armed;
             this.vertSpeedTriggerEnabled = a.vertSpeedTriggerEnabled;
             this.vertSpeed = a.vertSpeed;
 
@@ -100,25 +101,39 @@ namespace BobsPanicBox
 
         void CopyOrInit()
         {
+            Log.Info("Module_BobsPanicBox.CopyOrInit");
             foreach (var p in EditorLogic.fetch.ship.parts)
             {
                 if (p != this.part)
                 {
                     var m = p.FindModuleImplementing<Module_BobsPanicBox>();
-                    SetAllValues(m.av);
-                    return;
+                    if (m != null)
+                    {
+                        Log.Info("Existing module found");
+                        SetAllValues(m.av);
+                        return;
+                    }
                 }
             }
-            BPB_Editor.ResetToDefault(av);
+            BPB_Editor.ResetToDefault(ref av);
+            Log.Info("CopyOrInit, av.armed: " + av.armed);
+            SetAllValues(av);
+            Log.Info("CopyOrInit, armed: " + av.armed);
         }
 
         void Start()
         {
             Log.Info("Module_BobsAbortBox.Start, LoadedScene: " + HighLogic.LoadedScene + ", initted: " + initted);
+
             if (HighLogic.LoadedSceneIsFlight)
             {
                 vm = this.vessel.GetComponent<BPB_VesselModule>();
                 flightInfo = new Flight();
+                av = new AbortValues(flightInfo);
+            }
+            else
+            {
+                av = new AbortValues(editorInfo);
             }
 
             if (!initted)
@@ -126,11 +141,14 @@ namespace BobsPanicBox
                 Log.Info("Module_BobsAbortBox.Start, !initted");
                 if (HighLogic.LoadedSceneIsEditor)
                 {
+                    av = new AbortValues(flightInfo);
                     CopyOrInit();
                 }
                 else
                 {
-                    BPB_Editor.ResetToDefault(flightInfo.av);
+
+                   
+                    BPB_Editor.ResetToDefault(ref flightInfo.av);
                     SetAllValues(av);
 
                     flightInfo.SaveCurrent(this);
@@ -139,6 +157,7 @@ namespace BobsPanicBox
             }
             else
             {
+                Log.Info("Initted, setting abortValues to initted settings, armed: " + armed);
                 if (HighLogic.LoadedSceneIsEditor)
                 {
                     editorInfo.av.armed = armed;
@@ -154,6 +173,7 @@ namespace BobsPanicBox
                     editorInfo.av.postAbortAction = postAbortAction;
                     editorInfo.av.postAbortDelay = postAbortDelay;
                     editorInfo.av.delayPostAbortUntilSafe = delayPostAbortUntilSafe;
+                    SetAllValues(editorInfo.av);
                 }
                 else
                 {
@@ -170,13 +190,13 @@ namespace BobsPanicBox
                     flightInfo.av.postAbortAction = postAbortAction;
                     flightInfo.av.postAbortDelay = postAbortDelay;
                     flightInfo.av.delayPostAbortUntilSafe = delayPostAbortUntilSafe;
+                    SetAllValues(flightInfo.av);
                     flightInfo.SaveCurrent(this);
                 }
             }
-
-
         }
 
+#if false
         internal static bool IsInitiallyActive()
         {
             if (HighLogic.LoadedSceneIsEditor && EditorDriver.editorFacility == EditorFacility.VAB && HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().activeInVAB)
@@ -187,5 +207,6 @@ namespace BobsPanicBox
                 return HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().activeInVAB;
             return false;
         }
+#endif
     }
 }
