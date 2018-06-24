@@ -45,7 +45,7 @@ namespace BobsPanicBox
         internal bool explosiveTriggerEnabled = false;
 
         [KSPField(isPersistant = true)]
-        internal float disableAfter = 600;
+        internal int disableAfter = 600;
 
         [KSPField(isPersistant = true)]
         internal int actionAfterTimeout = 0;
@@ -54,7 +54,7 @@ namespace BobsPanicBox
         internal int postAbortAction;
 
         [KSPField(isPersistant = true)]
-        internal float postAbortDelay;
+        internal int postAbortDelay;
 
         [KSPField(isPersistant = true)]
         internal bool delayPostAbortUntilSafe;

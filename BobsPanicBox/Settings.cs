@@ -18,6 +18,8 @@ namespace BobsPanicBox
         public override int SectionOrder { get { return 1; } }
         public override bool HasPresets { get { return false; } }
 
+        [GameParameters.CustomParameterUI("Use KSP skin")]
+        public bool useKSPskin = true;
 
 
         [GameParameters.CustomParameterUI("Active at launch")]

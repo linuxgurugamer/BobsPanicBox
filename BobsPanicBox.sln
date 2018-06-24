@@ -9,10 +9,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		BobsPanicBox.version = BobsPanicBox.version
 		buildRelease.bat = buildRelease.bat
+		ChangeLog.txt = ChangeLog.txt
 		deploy.bat = deploy.bat
 		jenkins.txt = jenkins.txt
-		LICENSE = LICENSE
+		LICENSE.txt = LICENSE.txt
 		ReadMe.md = ReadMe.md
+		TODO.txt = TODO.txt
 	EndProjectSection
 EndProject
 Global

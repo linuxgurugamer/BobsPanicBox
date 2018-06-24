@@ -16,11 +16,11 @@ namespace BobsPanicBox
         public bool exceedingAoA;
         public int maxAoA;
         public bool explosiveTriggerEnabled;
-        internal float disableAfter;
+        internal int disableAfter;
         internal int actionAfterTimeout;
 
         internal int postAbortAction;
-        internal float postAbortDelay;
+        internal int postAbortDelay;
         internal bool delayPostAbortUntilSafe;
 
         Flight flightParent = null;

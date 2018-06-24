@@ -10,14 +10,15 @@ namespace BobsPanicBox
     {
         BPB_VesselModule vm;
 
+
         public void OnDestroy()
         {
             if (HighLogic.LoadedSceneIsFlight && vm != null)
             {
-                if (vm.armed && vm.explosiveTriggerEnabled)
+                if (FlightGlobals.ActiveVessel == this.vessel && vm.armed && vm.explosiveTriggerEnabled)
                 {
                     Log.Info("Explosion Detected, part: " + this.part.partInfo.title);
-                    ScreenMessages.PostScreenMessage("<color=red>ABORTING - Explosion Detected!</color> - "  + this.part.partInfo.title, 10f);
+                    //ScreenMessages.PostScreenMessage("<color=red>ABORTING - Explosion Detected!</color> - "  + this.part.partInfo.title, 10f);
 
                     vm.SetAllActive(true, false, "Aborted! Explosion Detected");
                     vm.TriggerAbort();

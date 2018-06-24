@@ -64,7 +64,8 @@ namespace BobsPanicBox
         {
             if (visible)
             {
-                GUI.skin = HighLogic.Skin;
+                if (HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().useKSPskin)
+                    GUI.skin = HighLogic.Skin;
                 bpbWinRect = ClickThruBlocker.GUILayoutWindow(23874244, bpbWinRect, BPB_Window, "Bob's Panic Box");
             }
         }
@@ -187,9 +188,14 @@ namespace BobsPanicBox
 
             GUILayout.Space(10);
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Disable after flight time (secs):" + abortValues.disableAfter.ToString("F1"));
-            GUILayout.FlexibleSpace();
-            abortValues.disableAfter = GUILayout.HorizontalSlider(abortValues.disableAfter, 10f, 600f, GUILayout.Width(200));
+            GUILayout.Label("Disable after flight time (secs):");
+            try
+            {
+                GUILayout.FlexibleSpace();
+                abortValues.disableAfter = Int32.Parse(GUILayout.TextField(abortValues.disableAfter.ToString(), GUILayout.Width(50)));
+            } catch { }
+            GUILayout.Space(10);
+            abortValues.disableAfter = (int)GUILayout.HorizontalSlider(abortValues.disableAfter, 10f, 600f, GUILayout.Width(200));        
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -214,9 +220,14 @@ namespace BobsPanicBox
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Post-abort delay (secs):" + abortValues.postAbortDelay.ToString("F1"));
-            GUILayout.FlexibleSpace();
-            abortValues.postAbortDelay = GUILayout.HorizontalSlider(abortValues.postAbortDelay, 10f, 60f, GUILayout.Width(200));
+            GUILayout.Label("Post-abort delay (secs):");
+            try
+            {
+                GUILayout.FlexibleSpace();
+                abortValues.postAbortDelay = Int32.Parse(GUILayout.TextField(abortValues.postAbortDelay.ToString(), GUILayout.Width(50)));
+            } catch { }
+            GUILayout.Space(10);
+            abortValues.postAbortDelay = (int)GUILayout.HorizontalSlider(abortValues.postAbortDelay, 10f, 60f, GUILayout.Width(200));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -264,10 +275,10 @@ namespace BobsPanicBox
             abortValues.maxAoA = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().maxAoA;
             abortValues.gForceTrigger = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().defaultG;
             abortValues.explosiveTriggerEnabled = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().explosionDetection;
-            abortValues.disableAfter = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().disableAfter;
+            abortValues.disableAfter = (int)HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().disableAfter;
             abortValues.actionAfterTimeout = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().actionAfterTimeout;
             abortValues.postAbortAction = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().postAbortAction;
-            abortValues.postAbortDelay = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().postAbortDelay;
+            abortValues.postAbortDelay = (int)HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().postAbortDelay;
             abortValues.delayPostAbortUntilSafe = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().delayPostAbortUntilSafe;
         }
     }

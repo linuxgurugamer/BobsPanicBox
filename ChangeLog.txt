@@ -1,0 +1,8 @@
+0.0.1
+	Added option to not use KSP skin
+	Fixed  explosions being caught from the non-active ship
+	Changed seconds timers from float to int
+	Added entry field for seconds timers for more precise entry
+
+0.0.0
+	Initial beta

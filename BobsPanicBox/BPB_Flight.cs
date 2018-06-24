@@ -32,15 +32,14 @@ namespace BobsPanicBox
                     lastActiveVessel = v;
                     vm = v.GetComponent<BPB_VesselModule>();
                 }
-
-                if (vm.armed && !vm.aborted)
+                if (vm.armed && !vm.aborted && !v.ActionGroups[KSPActionGroup.Abort])
                 {
                     if (v.missionTime <= vm.disableAfter)
                     {
                         if (v.verticalSpeed < vm.vertSpeed && vm.vertSpeedTriggerEnabled)
                         {
                            
-                                ScreenMessages.PostScreenMessage("<color=red>ABORTING - AAS Negative Vertical Velocity Detected!</color> - " + v.verticalSpeed, 10f);
+                                ScreenMessages.PostScreenMessage("<color=red>ABORTING - BPB Negative Vertical Velocity Detected!</color> - " + v.verticalSpeed, 10f);
                                 v.ActionGroups.SetGroup(KSPActionGroup.Abort, true);
                                 vm.SetAllActive(true, false, "Aborted! Negative Vertical Velocity Detected");
                            
@@ -48,7 +47,7 @@ namespace BobsPanicBox
 
                         if (v.geeForce > vm.gForceTrigger && vm.gForceTriggerEnabled)
                         {
-                                ScreenMessages.PostScreenMessage("<color=red>ABORTING - AAS High G-Force Detected!</color> - " + v.geeForce, 10f);
+                                ScreenMessages.PostScreenMessage("<color=red>ABORTING - BPB High G-Force Detected!</color> - " + v.geeForce, 10f);
                                 v.ActionGroups.SetGroup(KSPActionGroup.Abort, true);
                                 vm.SetAllActive(true, false, "Aborted! High G-Force Detected");
                          
@@ -148,5 +147,6 @@ namespace BobsPanicBox
             }
             return kg;
         }
+
     }
 }
