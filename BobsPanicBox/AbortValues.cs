@@ -18,6 +18,7 @@ namespace BobsPanicBox
         public bool explosiveTriggerEnabled;
         internal int disableAfter;
         internal int actionAfterTimeout;
+        internal float maxTimeoutActionG = 10f;
 
         internal int postAbortAction;
         internal int postAbortDelay;
@@ -54,6 +55,7 @@ namespace BobsPanicBox
             this.explosiveTriggerEnabled = av.explosiveTriggerEnabled;
             this.disableAfter = av.disableAfter;
             this.actionAfterTimeout = av.actionAfterTimeout;
+            this.maxTimeoutActionG = av.maxTimeoutActionG;
             this.postAbortAction = av.postAbortAction;
             this.postAbortDelay = av.postAbortDelay;
             this.delayPostAbortUntilSafe = av.delayPostAbortUntilSafe;
@@ -91,7 +93,8 @@ namespace BobsPanicBox
                 actionAfterTimeout != m.actionAfterTimeout ||
                 postAbortAction != m.postAbortAction ||
                 postAbortDelay != m.postAbortDelay ||
-                delayPostAbortUntilSafe != m.delayPostAbortUntilSafe;
+                delayPostAbortUntilSafe != m.delayPostAbortUntilSafe ||
+                maxTimeoutActionG != m.maxTimeoutActionG;
         }
 
         public void SaveCurrent(Module_BobsPanicBox m)
@@ -108,6 +111,7 @@ namespace BobsPanicBox
             explosiveTriggerEnabled = m.explosiveTriggerEnabled;
             disableAfter = m.disableAfter;
             actionAfterTimeout = m.actionAfterTimeout;
+            maxTimeoutActionG = m.maxTimeoutActionG;
 
             postAbortAction = m.postAbortAction;
             postAbortDelay = m.postAbortDelay;
@@ -126,6 +130,7 @@ namespace BobsPanicBox
                 m.vm.explosiveTriggerEnabled = m.explosiveTriggerEnabled;
                 m.vm.disableAfter = m.disableAfter;
                 m.vm.actionAfterTimeout = m.actionAfterTimeout;
+                m.vm.maxTimeoutActionG = m.maxTimeoutActionG;
 
                 m.vm.postAbortAction = m.postAbortAction;
                 m.vm.postAbortDelay = m.postAbortDelay;

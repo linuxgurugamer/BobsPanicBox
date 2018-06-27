@@ -20,7 +20,10 @@ namespace BobsPanicBox
         internal int disableAfter = 600;
 
         [KSPField(isPersistant = true)]
-        internal int actionAfterTimeout = 0; 
+        internal int actionAfterTimeout = 0;
+
+        [KSPField(isPersistant = true)]
+        internal float maxTimeoutActionG = 10f;
 
         [KSPField(isPersistant = true)]
         bool initted = false;
@@ -69,12 +72,12 @@ namespace BobsPanicBox
         {
             if (HighLogic.LoadedSceneIsEditor)
             {
-                BPB_Editor.Instance.EnableWindow(editorInfo.av);
+                BPB_Editor_Window.Instance.EnableWindow(editorInfo.av);
             }
             if (HighLogic.LoadedSceneIsFlight)
             {
                 Log.Info("Module_BobsPanicBox, openAutoAbort");
-                BPB_Editor.Instance.EnableWindow(flightInfo.av);
+                BPB_Editor_Window.Instance.EnableWindow(flightInfo.av);
             }
         }
 
@@ -93,6 +96,7 @@ namespace BobsPanicBox
             this.explosiveTriggerEnabled = a.explosiveTriggerEnabled;
             this.disableAfter = a.disableAfter;
             this.actionAfterTimeout = a.actionAfterTimeout;
+            this.maxTimeoutActionG = a.maxTimeoutActionG;
             this.postAbortAction = a.postAbortAction;
             this.postAbortDelay = a.postAbortDelay;
             this.delayPostAbortUntilSafe = a.delayPostAbortUntilSafe;
@@ -115,7 +119,7 @@ namespace BobsPanicBox
                     }
                 }
             }
-            BPB_Editor.ResetToDefault(ref av);
+            BPB_Editor_Window.ResetToDefault(ref av);
             Log.Info("CopyOrInit, av.armed: " + av.armed);
             SetAllValues(av);
             Log.Info("CopyOrInit, armed: " + av.armed);
@@ -148,7 +152,7 @@ namespace BobsPanicBox
                 {
 
                    
-                    BPB_Editor.ResetToDefault(ref flightInfo.av);
+                    BPB_Editor_Window.ResetToDefault(ref flightInfo.av);
                     SetAllValues(av);
 
                     flightInfo.SaveCurrent(this);
@@ -170,6 +174,7 @@ namespace BobsPanicBox
                     editorInfo.av.explosiveTriggerEnabled = explosiveTriggerEnabled;
                     editorInfo.av.disableAfter = disableAfter;
                     editorInfo.av.actionAfterTimeout = actionAfterTimeout;
+                    editorInfo.av.maxTimeoutActionG = maxTimeoutActionG;
                     editorInfo.av.postAbortAction = postAbortAction;
                     editorInfo.av.postAbortDelay = postAbortDelay;
                     editorInfo.av.delayPostAbortUntilSafe = delayPostAbortUntilSafe;
@@ -187,6 +192,7 @@ namespace BobsPanicBox
                     flightInfo.av.explosiveTriggerEnabled = explosiveTriggerEnabled;
                     flightInfo.av.disableAfter = disableAfter;
                     flightInfo.av.actionAfterTimeout = actionAfterTimeout;
+                    flightInfo.av.maxTimeoutActionG = maxTimeoutActionG;
                     flightInfo.av.postAbortAction = postAbortAction;
                     flightInfo.av.postAbortDelay = postAbortDelay;
                     flightInfo.av.delayPostAbortUntilSafe = delayPostAbortUntilSafe;

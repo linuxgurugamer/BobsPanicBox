@@ -31,8 +31,7 @@ namespace BobsPanicBox
         [GameParameters.CustomParameterUI("Active in SPH")]
         public bool activeInSPH = false;
 
-        [GameParameters.CustomParameterUI("Allow change in flight",
-            toolTip = "Not implemented")]
+        [GameParameters.CustomParameterUI("Allow change in flight")]
         public bool allowChangeInFlight = false;
 
 
@@ -79,7 +78,7 @@ namespace BobsPanicBox
         [GameParameters.CustomIntParameterUI("Max AoA", minValue = 1, maxValue = 180)]
         public int maxAoA = 20;
 
-        [GameParameters.CustomIntParameterUI("Default disable after (secs)", minValue = 1, maxValue = 600,
+        [GameParameters.CustomIntParameterUI("Timeout after (secs)", minValue = 1, maxValue = 600,
             toolTip = "Disable Bob's Panic Box after this many minutes of flight")]
         public int disableAfter = 600;
 
@@ -87,6 +86,10 @@ namespace BobsPanicBox
             toolTip = "Trigger this action after the timeout, 0 = none")]
         public int actionAfterTimeout = 0;
 
+
+        [GameParameters.CustomFloatParameterUI("Max G for timeout action", minValue = 1, maxValue = 10f,
+          toolTip = "Wait until G below this after timing out before triggering the Timeout Action")]
+        public float maxTimeoutActionG = 10f;
 
         [GameParameters.CustomIntParameterUI("Post-Abort Action (PAA)", minValue = 0, maxValue = 10,
        toolTip = "Trigger this action after an abort, 0 = none")]

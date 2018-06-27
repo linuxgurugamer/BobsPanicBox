@@ -15,16 +15,16 @@ namespace BobsPanicBox
     {
         void Start()
         {
-            ToolbarControl.RegisterMod(BPB_Editor.MODID, BPB_Editor.MODNAME);
+            ToolbarControl.RegisterMod(BPB_Editor_Window.MODID, BPB_Editor_Window.MODNAME);
         }
     }
 
 
 
     [KSPAddon(KSPAddon.Startup.FlightAndEditor, false)]
-    internal class BPB_Editor : MonoBehaviour
+    internal class BPB_Editor_Window : MonoBehaviour
     {
-        internal static BPB_Editor Instance;
+        internal static BPB_Editor_Window Instance;
 
         internal bool visible = false;
         const int WIDTH = 500;
@@ -45,6 +45,11 @@ namespace BobsPanicBox
             {
                 abortValues = a;
                 visible = true;
+                if (HighLogic.LoadedSceneIsEditor)
+                    scene = "Editor";
+                else
+                    scene = "Flight";
+
             }
             else
             {
@@ -60,13 +65,15 @@ namespace BobsPanicBox
                 toolbarControl.SetFalse(false);
         }
 
+        string scene;
         void OnGUI()
         {
             if (visible)
             {
                 if (HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().useKSPskin)
                     GUI.skin = HighLogic.Skin;
-                bpbWinRect = ClickThruBlocker.GUILayoutWindow(23874244, bpbWinRect, BPB_Window, "Bob's Panic Box");
+
+                bpbWinRect = ClickThruBlocker.GUILayoutWindow(23874244, bpbWinRect, BPB_Window, "Bob's Panic Box: " + scene);
             }
         }
 
@@ -188,7 +195,7 @@ namespace BobsPanicBox
 
             GUILayout.Space(10);
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Disable after flight time (secs):");
+            GUILayout.Label("Timeout (disable) after (secs):");
             try
             {
                 GUILayout.FlexibleSpace();
@@ -207,8 +214,30 @@ namespace BobsPanicBox
             abortValues.actionAfterTimeout = (int)GUILayout.HorizontalSlider(abortValues.actionAfterTimeout, 0f, 10f, GUILayout.Width(200));
             GUILayout.EndHorizontal();
 
-
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Max G for timeout action:");
+            try
+            {
+                GUILayout.FlexibleSpace();
+                abortValues.maxTimeoutActionG = (float)Double.Parse(GUILayout.TextField(abortValues.maxTimeoutActionG.ToString("F1"), GUILayout.Width(50)));
+            }
+            catch { }
             GUILayout.Space(10);
+            abortValues.maxTimeoutActionG = GUILayout.HorizontalSlider(abortValues.maxTimeoutActionG, 1f, 10f, GUILayout.Width(200));
+            GUILayout.EndHorizontal();
+            GUILayout.Space(10);
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Post-abort delay (secs):");
+            try
+            {
+                GUILayout.FlexibleSpace();
+                abortValues.postAbortDelay = Int32.Parse(GUILayout.TextField(abortValues.postAbortDelay.ToString(), GUILayout.Width(50)));
+            }
+            catch { }
+            GUILayout.Space(10);
+            abortValues.postAbortDelay = (int)GUILayout.HorizontalSlider(abortValues.postAbortDelay, 10f, 60f, GUILayout.Width(200));
+            GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             if (abortValues.postAbortAction == 0)
@@ -217,17 +246,6 @@ namespace BobsPanicBox
                 GUILayout.Label("Trigger action after abort: Custom" + abortValues.postAbortAction.ToString("D2"));
             GUILayout.FlexibleSpace();
             abortValues.postAbortAction = (int)GUILayout.HorizontalSlider(abortValues.postAbortAction, 0f, 10f, GUILayout.Width(200));
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Post-abort delay (secs):");
-            try
-            {
-                GUILayout.FlexibleSpace();
-                abortValues.postAbortDelay = Int32.Parse(GUILayout.TextField(abortValues.postAbortDelay.ToString(), GUILayout.Width(50)));
-            } catch { }
-            GUILayout.Space(10);
-            abortValues.postAbortDelay = (int)GUILayout.HorizontalSlider(abortValues.postAbortDelay, 10f, 60f, GUILayout.Width(200));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -249,6 +267,15 @@ namespace BobsPanicBox
             if (GUILayout.Button("Close"))
             {
                 CloseWindow();
+            }
+            if (HighLogic.LoadedSceneIsFlight)
+            {
+                if (GUILayout.Button("Apply"))
+                {
+                    var vm = FlightGlobals.ActiveVessel.GetComponent<BPB_VesselModule>();
+                    vm.SetAllValues(abortValues);
+                    abortValues.SetAllValues(abortValues);
+                }
             }
             GUILayout.EndHorizontal();
             GUI.DragWindow();
@@ -277,6 +304,7 @@ namespace BobsPanicBox
             abortValues.explosiveTriggerEnabled = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().explosionDetection;
             abortValues.disableAfter = (int)HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().disableAfter;
             abortValues.actionAfterTimeout = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().actionAfterTimeout;
+            abortValues.maxTimeoutActionG = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().maxTimeoutActionG;
             abortValues.postAbortAction = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().postAbortAction;
             abortValues.postAbortDelay = (int)HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().postAbortDelay;
             abortValues.delayPostAbortUntilSafe = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().delayPostAbortUntilSafe;

@@ -1,4 +1,14 @@
-0.0.1
+0.0.0.2
+	In settings page, allowChangeInFlight was not yet implemented
+	Added scene name to window
+	Added code to detect if mission time is too great when first switching to a vessel
+	Flipped Postabort lines in dialog, for consistency
+	Added Apply button when in flight
+	Implemented changing values in flight
+	Added max G for timeout action
+	Updated text for timeout in settings and in dialog window
+
+0.0.0.1
 	Added option to not use KSP skin
 	Fixed  explosions being caught from the non-active ship
 	Changed seconds timers from float to int

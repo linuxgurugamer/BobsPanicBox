@@ -58,7 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbortValues.cs" />
-    <Compile Include="BPB_Editor.cs" />
+    <Compile Include="BPB_Editor_Window.cs" />
     <Compile Include="BPB_Flight.cs" />
     <Compile Include="BPB_VesselModule.cs" />
     <Compile Include="AssemblyVersion.cs">

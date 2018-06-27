@@ -14,6 +14,22 @@ namespace BobsPanicBox
 
         bool printed = false;
 
+        void Start()
+        {
+            if (HighLogic.LoadedSceneIsFlight)
+            {
+                Vessel v = FlightGlobals.ActiveVessel;
+                lastActiveVessel = v;
+                vm = v.GetComponent<BPB_VesselModule>();
+
+                if (FlightGlobals.ActiveVessel.missionTime > vm.disableAfter)
+                {
+                    vm.armed = false;
+                    Log.Info("BPB_Flight.Start, setting armed = false due to missionTime after vm.disableAfter");
+                }
+            }
+        }
+        bool timeoutInProgress = false;
         public void Update()
         {
             if (HighLogic.LoadedSceneIsFlight)
@@ -68,14 +84,23 @@ namespace BobsPanicBox
                         }
                     } else
                     {
-                        vm.armed = false;
-                        ScreenMessages.PostScreenMessage("Bob's Panic Box disabled due to timeout", 10f);
-                        Log.Info("Bob's Panic Box disabled due to timeout");
-                        if (vm.actionAfterTimeout > 0)
+                        if (!timeoutInProgress)
                         {
-                            var kg = GetActionGroup((int)vm.actionAfterTimeout);
-                            Log.Info("Calling action group: " + kg);
-                            v.ActionGroups.SetGroup(kg, true);
+                            Log.Info("timeoutInProgress");
+                            timeoutInProgress = true;
+                        }
+                        if (timeoutInProgress && v.geeForce <= vm.maxTimeoutActionG)
+                        {
+                            vm.armed = false;
+                            timeoutInProgress = false;
+                            ScreenMessages.PostScreenMessage("Bob's Panic Box disabled due to timeout", 10f);
+                            Log.Info("Bob's Panic Box disabled due to timeout");
+                            if (vm.actionAfterTimeout > 0)
+                            {
+                                var kg = GetActionGroup((int)vm.actionAfterTimeout);
+                                Log.Info("Calling action group: " + kg);
+                                v.ActionGroups.SetGroup(kg, true);
+                            }
                         }
                     }
                 }

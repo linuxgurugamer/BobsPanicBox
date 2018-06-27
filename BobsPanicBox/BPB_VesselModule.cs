@@ -51,6 +51,10 @@ namespace BobsPanicBox
         internal int actionAfterTimeout = 0;
 
         [KSPField(isPersistant = true)]
+        internal float maxTimeoutActionG = 10f;
+
+
+        [KSPField(isPersistant = true)]
         internal int postAbortAction;
 
         [KSPField(isPersistant = true)]
@@ -101,6 +105,7 @@ namespace BobsPanicBox
             this.explosiveTriggerEnabled = a.explosiveTriggerEnabled;
             this.disableAfter = a.disableAfter;
             this.actionAfterTimeout = a.actionAfterTimeout;
+            this.maxTimeoutActionG = a.maxTimeoutActionG;
             this.postAbortAction = a.postAbortAction;
             this.postAbortDelay = a.postAbortDelay;
             this.delayPostAbortUntilSafe = a.delayPostAbortUntilSafe;
