@@ -22,13 +22,16 @@ namespace BobsPanicBox
         public bool useKSPskin = true;
 
 
-        [GameParameters.CustomParameterUI("Active at launch")]
+        [GameParameters.CustomParameterUI("Active at launch",
+            toolTip = "When going straight to the launchpad.  Only relevant if a vessel has not been saved with this configured")]
         public bool activeAtLaunch = false;
 
-        [GameParameters.CustomParameterUI("Active in VAB")]
+        [GameParameters.CustomParameterUI("Active in VAB",
+            toolTip = "When creating a new vessel in the VAB")]
         public bool activeInVAB = false;
 
-        [GameParameters.CustomParameterUI("Active in SPH")]
+        [GameParameters.CustomParameterUI("Active in SPH",
+            toolTip = "When creating a new vessel in the SPH")]
         public bool activeInSPH = false;
 
         [GameParameters.CustomParameterUI("Allow change in flight")]
@@ -121,7 +124,7 @@ namespace BobsPanicBox
         public override bool HasPresets { get { return false; } }
 
 
-        [GameParameters.CustomParameterUI("Window via Part Action Menu")]
+        [GameParameters.CustomParameterUI("Window via Part Action Window")]
         public bool pamWindow = false;
 
         [GameParameters.CustomParameterUI("Toolbar Button")]

@@ -134,6 +134,8 @@ namespace BobsPanicBox
                 vm = this.vessel.GetComponent<BPB_VesselModule>();
                 flightInfo = new Flight();
                 av = new AbortValues(flightInfo);
+
+                Events["openAutoAbort"].guiActive = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().allowChangeInFlight;
             }
             else
             {
@@ -201,18 +203,5 @@ namespace BobsPanicBox
                 }
             }
         }
-
-#if false
-        internal static bool IsInitiallyActive()
-        {
-            if (HighLogic.LoadedSceneIsEditor && EditorDriver.editorFacility == EditorFacility.VAB && HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().activeInVAB)
-                return HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().activeInVAB;
-            if (HighLogic.LoadedSceneIsEditor && EditorDriver.editorFacility == EditorFacility.SPH && HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().activeInSPH)
-                return HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().activeInVAB;
-            if (HighLogic.LoadedSceneIsFlight && HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().activeAtLaunch)
-                return HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().activeInVAB;
-            return false;
-        }
-#endif
     }
 }
