@@ -51,6 +51,9 @@ namespace BobsPanicBox
         internal int actionAfterTimeout = 0;
 
         [KSPField(isPersistant = true)]
+        internal int disableAtAltitude = 100;
+
+        [KSPField(isPersistant = true)]
         internal float maxTimeoutActionG = 10f;
 
 
@@ -93,6 +96,7 @@ namespace BobsPanicBox
 
         public void SetAllValues(AbortValues a)
         {
+            this.armed = a.armed;
             this.vertSpeedTriggerEnabled = a.vertSpeedTriggerEnabled;
             this.vertSpeed = a.vertSpeed;
 
@@ -105,6 +109,7 @@ namespace BobsPanicBox
             this.explosiveTriggerEnabled = a.explosiveTriggerEnabled;
             this.disableAfter = a.disableAfter;
             this.actionAfterTimeout = a.actionAfterTimeout;
+            this.disableAtAltitude = a.disableAtAltitude;
             this.maxTimeoutActionG = a.maxTimeoutActionG;
             this.postAbortAction = a.postAbortAction;
             this.postAbortDelay = a.postAbortDelay;

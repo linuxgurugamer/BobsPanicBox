@@ -23,6 +23,9 @@ namespace BobsPanicBox
         internal int actionAfterTimeout = 0;
 
         [KSPField(isPersistant = true)]
+        internal int disableAtAltitude = 100;
+
+        [KSPField(isPersistant = true)]
         internal float maxTimeoutActionG = 10f;
 
         [KSPField(isPersistant = true)]
@@ -96,6 +99,7 @@ namespace BobsPanicBox
             this.explosiveTriggerEnabled = a.explosiveTriggerEnabled;
             this.disableAfter = a.disableAfter;
             this.actionAfterTimeout = a.actionAfterTimeout;
+            this.disableAtAltitude = a.disableAtAltitude;
             this.maxTimeoutActionG = a.maxTimeoutActionG;
             this.postAbortAction = a.postAbortAction;
             this.postAbortDelay = a.postAbortDelay;
@@ -135,10 +139,14 @@ namespace BobsPanicBox
                 flightInfo = new Flight();
                 av = new AbortValues(flightInfo);
 
-                Events["openAutoAbort"].guiActive = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().allowChangeInFlight;
+                Events["openAutoAbort"].guiActive = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().allowChangeInFlight && HighLogic.CurrentGame.Parameters.CustomParams<BPB_UI_Options>().pawWindow;
             }
             else
             {
+                if (HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().activeInVAB && EditorDriver.editorFacility == EditorFacility.VAB)
+                    Events["openAutoAbort"].guiActive = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().activeInVAB && HighLogic.CurrentGame.Parameters.CustomParams<BPB_UI_Options>().pawWindow;
+                if (HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().activeInSPH && EditorDriver.editorFacility == EditorFacility.SPH)
+                    Events["openAutoAbort"].guiActive = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().activeInSPH && HighLogic.CurrentGame.Parameters.CustomParams<BPB_UI_Options>().pawWindow;
                 av = new AbortValues(editorInfo);
             }
 
@@ -176,6 +184,7 @@ namespace BobsPanicBox
                     editorInfo.av.explosiveTriggerEnabled = explosiveTriggerEnabled;
                     editorInfo.av.disableAfter = disableAfter;
                     editorInfo.av.actionAfterTimeout = actionAfterTimeout;
+                    editorInfo.av.disableAtAltitude = disableAtAltitude;
                     editorInfo.av.maxTimeoutActionG = maxTimeoutActionG;
                     editorInfo.av.postAbortAction = postAbortAction;
                     editorInfo.av.postAbortDelay = postAbortDelay;
@@ -194,6 +203,7 @@ namespace BobsPanicBox
                     flightInfo.av.explosiveTriggerEnabled = explosiveTriggerEnabled;
                     flightInfo.av.disableAfter = disableAfter;
                     flightInfo.av.actionAfterTimeout = actionAfterTimeout;
+                    flightInfo.av.disableAtAltitude = disableAtAltitude;
                     flightInfo.av.maxTimeoutActionG = maxTimeoutActionG;
                     flightInfo.av.postAbortAction = postAbortAction;
                     flightInfo.av.postAbortDelay = postAbortDelay;

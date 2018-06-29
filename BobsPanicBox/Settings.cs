@@ -85,6 +85,10 @@ namespace BobsPanicBox
             toolTip = "Disable Bob's Panic Box after this many minutes of flight")]
         public int disableAfter = 600;
 
+        [GameParameters.CustomIntParameterUI("Disable at altitude (km)", minValue = 1, maxValue = 100,
+            toolTip = "Disable when this altitude is reached")]
+        public int disableAtAltitude = 100;
+
         [GameParameters.CustomIntParameterUI("Action after timeout", minValue = 0, maxValue = 10,
             toolTip = "Trigger this action after the timeout, 0 = none")]
         public int actionAfterTimeout = 0;
@@ -125,7 +129,7 @@ namespace BobsPanicBox
 
 
         [GameParameters.CustomParameterUI("Window via Part Action Window")]
-        public bool pamWindow = false;
+        public bool pawWindow = false;
 
         [GameParameters.CustomParameterUI("Toolbar Button")]
         public bool useToolbar = false;

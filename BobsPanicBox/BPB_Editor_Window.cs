@@ -206,6 +206,18 @@ namespace BobsPanicBox
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
+            GUILayout.Label("Disable at altitude (km):");
+            try
+            {
+                GUILayout.FlexibleSpace();
+                abortValues.disableAtAltitude = Int32.Parse(GUILayout.TextField(abortValues.disableAtAltitude.ToString(), GUILayout.Width(50)));
+            }
+            catch { }
+            GUILayout.Space(10);
+            abortValues.disableAtAltitude = (int)GUILayout.HorizontalSlider(abortValues.disableAtAltitude, 1f, 100f, GUILayout.Width(200));
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
             if (abortValues.actionAfterTimeout == 0)
                 GUILayout.Label("Trigger action after timeout: None");
             else
@@ -272,8 +284,9 @@ namespace BobsPanicBox
             {
                 if (GUILayout.Button("Apply"))
                 {
-                    var vm = FlightGlobals.ActiveVessel.GetComponent<BPB_VesselModule>();
+                    BPB_VesselModule vm = FlightGlobals.ActiveVessel.GetComponent<BPB_VesselModule>();
                     vm.SetAllValues(abortValues);
+                    //vm.armed = vm.vertSpeedTriggerEnabled | vm.gForceTriggerEnabled | vm.explosiveTriggerEnabled; 
                     abortValues.SetAllValues(abortValues);
                 }
             }

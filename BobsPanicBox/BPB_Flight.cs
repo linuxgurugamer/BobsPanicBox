@@ -48,9 +48,10 @@ namespace BobsPanicBox
                     lastActiveVessel = v;
                     vm = v.GetComponent<BPB_VesselModule>();
                 }
+                
                 if (vm.armed && !vm.aborted && !v.ActionGroups[KSPActionGroup.Abort])
                 {
-                    if (v.missionTime <= vm.disableAfter)
+                    if (v.missionTime <= vm.disableAfter && v.altitude <= vm.disableAtAltitude * 1000)
                     {
                         if (v.verticalSpeed < vm.vertSpeed && vm.vertSpeedTriggerEnabled)
                         {
@@ -93,8 +94,17 @@ namespace BobsPanicBox
                         {
                             vm.armed = false;
                             timeoutInProgress = false;
-                            ScreenMessages.PostScreenMessage("Bob's Panic Box disabled due to timeout", 10f);
-                            Log.Info("Bob's Panic Box disabled due to timeout");
+                            if (v.missionTime > vm.disableAfter)
+                            {
+                                ScreenMessages.PostScreenMessage("Bob's Panic Box disabled due to timeout", 10f);
+                                Log.Info("Bob's Panic Box disabled due to timeout");
+                            }
+                            if (v.altitude > vm.disableAtAltitude * 1000)
+                            {
+                                ScreenMessages.PostScreenMessage("Bob's Panic Box disabled due to altitude", 10f);
+                                Log.Info("Bob's Panic Box disabled due to altitude");
+                            }
+
                             if (vm.actionAfterTimeout > 0)
                             {
                                 var kg = GetActionGroup((int)vm.actionAfterTimeout);

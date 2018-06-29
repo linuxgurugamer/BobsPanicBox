@@ -1,3 +1,8 @@
+0.0.1
+	First full release
+	Fixed bug where changing the Active flag in flight didn't do anything
+	Added disableAtAltitude setting
+
 0.0.0.3
 	Added some tooltips to the settings window
 	Added check for PAW button to be enabled or disabled according to the options
