@@ -1,3 +1,8 @@
+0.0.1.1
+	Fixed bug where reverts would detect explosions
+	Fixed bug where explosions in other vessels would trigger abort in the wrong vessel
+	Changed BPB_Flight to be part of the BPB_VesselModule
+
 0.0.1
 	First full release
 	Fixed bug where changing the Active flag in flight didn't do anything

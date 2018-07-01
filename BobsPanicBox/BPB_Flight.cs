@@ -6,15 +6,16 @@ using UnityEngine;
 
 namespace BobsPanicBox
 {
-    [KSPAddon(KSPAddon.Startup.Flight, false)]
-    public class BPB_Flight : MonoBehaviour
+    //[KSPAddon(KSPAddon.Startup.Flight, false)]
+    //public class BPB_Flight : MonoBehaviour
+    partial class BPB_VesselModule : VesselModule
     {
         Vessel lastActiveVessel;
         BPB_VesselModule vm;
 
         bool printed = false;
 
-        void Start()
+        void Start2()
         {
             if (HighLogic.LoadedSceneIsFlight)
             {
@@ -34,7 +35,7 @@ namespace BobsPanicBox
         {
             if (HighLogic.LoadedSceneIsFlight)
             {
-                Vessel v = FlightGlobals.ActiveVessel;
+                Vessel v = lastActiveVessel;
 
                 if (!printed)
                 {

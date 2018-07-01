@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BobsPanicBox
 {
-    class BPB_VesselModule : VesselModule
+    partial class BPB_VesselModule : VesselModule
     {
 
         [KSPField(isPersistant = true)]
@@ -71,6 +71,7 @@ namespace BobsPanicBox
         new void Start()
         {
             av = new AbortValues();
+            Start2();
             base.Start();
         }
 
@@ -120,16 +121,15 @@ namespace BobsPanicBox
             {
                 var m = p.FindModuleImplementing<Module_BobsPanicBox>();
                 if (m != null)
-                {
                     m.SetAllValues(av);        
-                }
+
             }
         }
 
         public void TriggerAbort()
         {
             Log.Info("Triggering abort, vessel: " + vessel.name + ", vessel id: " + vessel.id);
-            this.vessel.ActionGroups.SetGroup(KSPActionGroup.Abort, true);
+            vessel.ActionGroups.SetGroup(KSPActionGroup.Abort, true);
         }
     }
 }
