@@ -14,16 +14,20 @@ namespace BobsPanicBox
         {
             if (HighLogic.LoadedSceneIsFlight)
             {
-                BPB_VesselModule vm = vessel.GetComponent<BPB_VesselModule>();
-                if (vm != null && vm.armed && vm.explosiveTriggerEnabled && !revert)
+                if (vessel != null && !vessel.HoldPhysics && FlightGlobals﻿.ready)
                 {
-                    Log.Info("Explosion Detected, part: " + this.part.partInfo.title);
-                    ScreenMessages.PostScreenMessage("<color=red>ABORTING - Explosion Detected!</color> - "  + this.part.partInfo.title, 10f);
+                    BPB_VesselModule vm = vessel.GetComponent<BPB_VesselModule>();
+                    if (vm != null && vm.armed && vm.explosiveTriggerEnabled && !revert)
+                    {
+                        
+                        Log.Info("Explosion Detected, part: " + this.part.partInfo.title);
+                        ScreenMessages.PostScreenMessage("<color=red>ABORTING - Explosion Detected!</color> - " + this.part.partInfo.title, 10f);
 
-                    vm.SetAllActive(true, false, "Aborted! Explosion Detected");
-                    GameEvents.onGameSceneSwitchRequested.Remove(onGameSceneSwitchRequested);
-                    vm.TriggerAbort();
-                    return;
+                        vm.SetAllActive(true, false, "Aborted! Explosion Detected");
+                        GameEvents.onGameSceneSwitchRequested.Remove(onGameSceneSwitchRequested);
+                        vm.TriggerAbort();
+                        return;
+                    }
                 }
             }
             GameEvents.onGameSceneSwitchRequested.Remove(onGameSceneSwitchRequested);
@@ -31,7 +35,8 @@ namespace BobsPanicBox
 
         void Start()
         {
-            if (HighLogic.LoadedSceneIsFlight)               
+            Log.Info("Module_BobsExplosionDetector.Start");
+            if (HighLogic.LoadedSceneIsFlight && vessel != null)               
                 GameEvents.onGameSceneSwitchRequested.Add(onGameSceneSwitchRequested);
         }
 

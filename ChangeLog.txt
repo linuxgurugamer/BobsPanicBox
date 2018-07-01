@@ -1,3 +1,9 @@
+0.0.1.2
+	Fixed nullref coming from the explosion detector,caused when no vessel
+	Added check to the explosion detector to be sure flight is ready.  KSP seems to do an extra OnDestroy when
+		launching vessels with certain parts (Stockalike Station parts Expansion Redux, the replacement for the 
+		stock docking port)
+
 0.0.1.1
 	Fixed bug where reverts would detect explosions
 	Fixed bug where explosions in other vessels would trigger abort in the wrong vessel
