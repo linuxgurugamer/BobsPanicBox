@@ -21,7 +21,15 @@ namespace BobsPanicBox
                     {
                         
                         Log.Info("Explosion Detected, part: " + this.part.partInfo.title);
-                        ScreenMessages.PostScreenMessage("<color=red>ABORTING - Explosion Detected!</color> - " + this.part.partInfo.title, 10f);
+                        if (this.vessel == FlightGlobals.ActiveVessel)
+                        {
+                            ScreenMessages.PostScreenMessage("<color=red>ABORTING - Explosion Detected!</color>");
+                        }
+                        else
+                        {
+                            ScreenMessages.PostScreenMessage(vessel.vesselName + " - ABORTING - Explosion Detected!");
+                        }
+                        ScreenMessages.PostScreenMessage(this.part.partInfo.title + " exploded", 10f);
 
                         vm.SetAllActive(true, false, "Aborted! Explosion Detected");
                         GameEvents.onGameSceneSwitchRequested.Remove(onGameSceneSwitchRequested);

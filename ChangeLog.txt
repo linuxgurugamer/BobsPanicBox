@@ -1,3 +1,7 @@
+0.0.1.3
+	Changed messages to reflect where the abort was.  If on active vessel, will be in red, otherwise will be in yellow
+	Reformatted messages to fix on single lines
+
 0.0.1.2
 	Fixed nullref coming from the explosion detector,caused when no vessel
 	Added check to the explosion detector to be sure flight is ready.  KSP seems to do an extra OnDestroy when

@@ -49,26 +49,35 @@ namespace BobsPanicBox
                     lastActiveVessel = v;
                     vm = v.GetComponent<BPB_VesselModule>();
                 }
-                
+
                 if (vm.armed && !vm.aborted && !v.ActionGroups[KSPActionGroup.Abort])
                 {
                     if (v.missionTime <= vm.disableAfter && v.altitude <= vm.disableAtAltitude * 1000)
                     {
                         if (v.verticalSpeed < vm.vertSpeed && vm.vertSpeedTriggerEnabled)
                         {
-                           
-                                ScreenMessages.PostScreenMessage("<color=red>ABORTING - BPB Negative Vertical Velocity Detected!</color> - " + v.verticalSpeed, 10f);
-                                v.ActionGroups.SetGroup(KSPActionGroup.Abort, true);
-                                vm.SetAllActive(true, false, "Aborted! Negative Vertical Velocity Detected");
-                           
+                            if (this.vessel == FlightGlobals.ActiveVessel)
+                                ScreenMessages.PostScreenMessage("<color=red>ABORTING - BPB Negative Vertical Velocity Detected!</color>", 10f);
+                            else
+                                ScreenMessages.PostScreenMessage("ABORTING - BPB Negative Vertical Velocity Detected!");
+
+                            ScreenMessages.PostScreenMessage(v.verticalSpeed + " m/s", 10f);
+                            v.ActionGroups.SetGroup(KSPActionGroup.Abort, true);
+                            vm.SetAllActive(true, false, "Aborted! Negative Vertical Velocity Detected");
+
                         }
 
                         if (v.geeForce > vm.gForceTrigger && vm.gForceTriggerEnabled)
                         {
-                                ScreenMessages.PostScreenMessage("<color=red>ABORTING - BPB High G-Force Detected!</color> - " + v.geeForce, 10f);
-                                v.ActionGroups.SetGroup(KSPActionGroup.Abort, true);
-                                vm.SetAllActive(true, false, "Aborted! High G-Force Detected");
-                         
+                            if (this.vessel == FlightGlobals.ActiveVessel)
+                                ScreenMessages.PostScreenMessage("<color=red>ABORTING - BPB High G-Force Detected!</color>", 10f);
+                            else
+                                ScreenMessages.PostScreenMessage("ABORTING - BPB High G-Force Detected!");
+
+                            ScreenMessages.PostScreenMessage(v.geeForce + " Gs", 10f);
+                            v.ActionGroups.SetGroup(KSPActionGroup.Abort, true);
+                            vm.SetAllActive(true, false, "Aborted! High G-Force Detected");
+
                         }
 
                         if (vm.exceedingAoA && v.GetSrfVelocity().magnitude > 10 && v.missionTime > 1)
@@ -77,14 +86,18 @@ namespace BobsPanicBox
                             Log.Info("BPB_Flight.Update, v3d1: " + v3d1);
                             if (v3d1 > vm.maxAoA)
                             {
-                                Log.Info("v3d1: " + v3d1 + ", v.GetSrfVelocity().magnitude: " + v.GetSrfVelocity().magnitude + ", vm.maxAoA: " + vm.maxAoA);
-                                ScreenMessages.PostScreenMessage("<color=red>ABORTING - Max AoA Exceeded!</color> - " + vm.maxAoA + " degrees", 10f);
+                                if (this.vessel == FlightGlobals.ActiveVessel)
+                                    ScreenMessages.PostScreenMessage("<color=red>ABORTING - Max AoA Exceeded!</color>", 10f);
+                                else
+                                    ScreenMessages.PostScreenMessage("ABORTING - Max AoA Exceeded!");
+                                ScreenMessages.PostScreenMessage(vm.maxAoA + " degrees", 10f);
                                 v.ActionGroups.SetGroup(KSPActionGroup.Abort, true);
                                 vm.SetAllActive(true, false, "Aborted! Max AoA Exceeded");
                             }
 
                         }
-                    } else
+                    }
+                    else
                     {
                         if (!timeoutInProgress)
                         {
@@ -97,12 +110,14 @@ namespace BobsPanicBox
                             timeoutInProgress = false;
                             if (v.missionTime > vm.disableAfter)
                             {
-                                ScreenMessages.PostScreenMessage("Bob's Panic Box disabled due to timeout", 10f);
+                                if (this.vessel == FlightGlobals.ActiveVessel)
+                                    ScreenMessages.PostScreenMessage("Bob's Panic Box disabled due to timeout", 10f);
                                 Log.Info("Bob's Panic Box disabled due to timeout");
                             }
                             if (v.altitude > vm.disableAtAltitude * 1000)
                             {
-                                ScreenMessages.PostScreenMessage("Bob's Panic Box disabled due to altitude", 10f);
+                                if (this.vessel == FlightGlobals.ActiveVessel)
+                                    ScreenMessages.PostScreenMessage("Bob's Panic Box disabled due to altitude", 10f);
                                 Log.Info("Bob's Panic Box disabled due to altitude");
                             }
 
@@ -115,10 +130,10 @@ namespace BobsPanicBox
                         }
                     }
                 }
-                
+
                 if (vm.aborted && vm.postAbortAction != 0 && !vm.postAbortActionCompleted)
                 {
-                    
+
                     if (vm.abortTime + vm.postAbortDelay <= v.missionTime)
                     {
                         // Check for safechute
