@@ -19,9 +19,8 @@ namespace BobsPanicBox
                     BPB_VesselModule vm = vessel.GetComponent<BPB_VesselModule>();
                     if (vm != null && vm.armed && vm.explosiveTriggerEnabled && !revert)
                     {
-                        
-                        Log.Info("Explosion Detected, part: " + this.part.partInfo.title);
-                        if (this.vessel == FlightGlobals.ActiveVessel)
+                        //if (this.vessel == FlightGlobals.ActiveVessel)
+                        if (this.vessel.isActiveVessel)
                         {
                             ScreenMessages.PostScreenMessage("<color=red>ABORTING - Explosion Detected!</color>");
                         }
@@ -43,7 +42,6 @@ namespace BobsPanicBox
 
         void Start()
         {
-            Log.Info("Module_BobsExplosionDetector.Start");
             if (HighLogic.LoadedSceneIsFlight && vessel != null)               
                 GameEvents.onGameSceneSwitchRequested.Add(onGameSceneSwitchRequested);
         }

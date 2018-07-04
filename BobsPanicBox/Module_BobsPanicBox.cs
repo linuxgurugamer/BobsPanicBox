@@ -23,7 +23,10 @@ namespace BobsPanicBox
         internal int actionAfterTimeout = 0;
 
         [KSPField(isPersistant = true)]
-        internal int disableAtAltitude = 100;
+        internal int disableAtAltitudeKm = 100;
+
+        [KSPField(isPersistant = true)]
+        internal int disableAtAltitude = 100000;
 
         [KSPField(isPersistant = true)]
         internal float maxTimeoutActionG = 10f;
@@ -79,37 +82,39 @@ namespace BobsPanicBox
             }
             if (HighLogic.LoadedSceneIsFlight)
             {
-                Log.Info("Module_BobsPanicBox, openAutoAbort");
                 BPB_Editor_Window.Instance.EnableWindow(flightInfo.av);
             }
         }
 
         public void SetAllValues(AbortValues a)
         {
-            this.armed = a.armed;
-            this.vertSpeedTriggerEnabled = a.vertSpeedTriggerEnabled;
-            this.vertSpeed = a.vertSpeed;
+            if (a != null)
+            {
+                this.armed = a.armed;
+                this.vertSpeedTriggerEnabled = a.vertSpeedTriggerEnabled;
+                this.vertSpeed = a.vertSpeed;
 
-            this.gForceTriggerEnabled = a.gForceTriggerEnabled;
-            this.gForceTrigger = a.gForceTrigger;
+                this.gForceTriggerEnabled = a.gForceTriggerEnabled;
+                this.gForceTrigger = a.gForceTrigger;
 
-            this.exceedingAoA = a.exceedingAoA;
-            this.maxAoA = a.maxAoA;
+                this.exceedingAoA = a.exceedingAoA;
+                this.maxAoA = a.maxAoA;
 
-            this.explosiveTriggerEnabled = a.explosiveTriggerEnabled;
-            this.disableAfter = a.disableAfter;
-            this.actionAfterTimeout = a.actionAfterTimeout;
-            this.disableAtAltitude = a.disableAtAltitude;
-            this.maxTimeoutActionG = a.maxTimeoutActionG;
-            this.postAbortAction = a.postAbortAction;
-            this.postAbortDelay = a.postAbortDelay;
-            this.delayPostAbortUntilSafe = a.delayPostAbortUntilSafe;
-            av = a;
+                this.explosiveTriggerEnabled = a.explosiveTriggerEnabled;
+                this.disableAfter = a.disableAfter;
+                this.actionAfterTimeout = a.actionAfterTimeout;
+                this.disableAtAltitudeKm = a.disableAtAltitudeKm;
+                this.disableAtAltitude = a.disableAtAltitudeKm * 1000;
+                this.maxTimeoutActionG = a.maxTimeoutActionG;
+                this.postAbortAction = a.postAbortAction;
+                this.postAbortDelay = a.postAbortDelay;
+                this.delayPostAbortUntilSafe = a.delayPostAbortUntilSafe;
+                av = a;
+            }
         }
 
         void CopyOrInit()
         {
-            Log.Info("Module_BobsPanicBox.CopyOrInit");
             foreach (var p in EditorLogic.fetch.ship.parts)
             {
                 if (p != this.part)
@@ -117,22 +122,17 @@ namespace BobsPanicBox
                     var m = p.FindModuleImplementing<Module_BobsPanicBox>();
                     if (m != null)
                     {
-                        Log.Info("Existing module found");
                         SetAllValues(m.av);
                         return;
                     }
                 }
             }
             BPB_Editor_Window.ResetToDefault(ref av);
-            Log.Info("CopyOrInit, av.armed: " + av.armed);
             SetAllValues(av);
-            Log.Info("CopyOrInit, armed: " + av.armed);
         }
 
         void Start()
         {
-            Log.Info("Module_BobsAbortBox.Start, LoadedScene: " + HighLogic.LoadedScene + ", initted: " + initted);
-
             if (HighLogic.LoadedSceneIsFlight)
             {
                 vm = this.vessel.GetComponent<BPB_VesselModule>();
@@ -152,7 +152,6 @@ namespace BobsPanicBox
 
             if (!initted)
             {
-                Log.Info("Module_BobsAbortBox.Start, !initted");
                 if (HighLogic.LoadedSceneIsEditor)
                 {
                     av = new AbortValues(flightInfo);
@@ -171,7 +170,6 @@ namespace BobsPanicBox
             }
             else
             {
-                Log.Info("Initted, setting abortValues to initted settings, armed: " + armed);
                 if (HighLogic.LoadedSceneIsEditor)
                 {
                     editorInfo.av.armed = armed;
@@ -184,7 +182,8 @@ namespace BobsPanicBox
                     editorInfo.av.explosiveTriggerEnabled = explosiveTriggerEnabled;
                     editorInfo.av.disableAfter = disableAfter;
                     editorInfo.av.actionAfterTimeout = actionAfterTimeout;
-                    editorInfo.av.disableAtAltitude = disableAtAltitude;
+                    editorInfo.av.disableAtAltitudeKm = disableAtAltitudeKm;
+                    editorInfo.av.disableAtAltitude = disableAtAltitudeKm * 1000;
                     editorInfo.av.maxTimeoutActionG = maxTimeoutActionG;
                     editorInfo.av.postAbortAction = postAbortAction;
                     editorInfo.av.postAbortDelay = postAbortDelay;
@@ -203,7 +202,8 @@ namespace BobsPanicBox
                     flightInfo.av.explosiveTriggerEnabled = explosiveTriggerEnabled;
                     flightInfo.av.disableAfter = disableAfter;
                     flightInfo.av.actionAfterTimeout = actionAfterTimeout;
-                    flightInfo.av.disableAtAltitude = disableAtAltitude;
+                    flightInfo.av.disableAtAltitudeKm = disableAtAltitudeKm;
+                    flightInfo.av.disableAtAltitude = disableAtAltitudeKm * 1000;
                     flightInfo.av.maxTimeoutActionG = maxTimeoutActionG;
                     flightInfo.av.postAbortAction = postAbortAction;
                     flightInfo.av.postAbortDelay = postAbortDelay;

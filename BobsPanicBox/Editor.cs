@@ -16,7 +16,6 @@ namespace BobsPanicBox
 
         public void SaveCurrent(Module_BobsPanicBox m)
         {
-            Log.Info("Editor.SaveCurrent");
             av.SaveCurrent(m);
         }
         public bool Changed(Module_BobsPanicBox m)
@@ -26,7 +25,6 @@ namespace BobsPanicBox
 
         public void SetAllActive(bool armed, string status)
         {
-            Log.Info("SetAllActive, armed: " + armed + ", status: " + status);
 
             foreach (var p in EditorLogic.fetch.ship.parts)
             {
@@ -41,13 +39,16 @@ namespace BobsPanicBox
 
         public void SetAllValues(AbortValues a)
         {
-            av = a;
-            foreach (var p in EditorLogic.fetch.ship.parts)
+            if (a != null)
             {
-                var m = p.FindModuleImplementing<Module_BobsPanicBox>();
-                if (m != null)
+                av = a;
+                foreach (var p in EditorLogic.fetch.ship.parts)
                 {
-                    m.SetAllValues(av);
+                    var m = p.FindModuleImplementing<Module_BobsPanicBox>();
+                    if (m != null)
+                    {
+                        m.SetAllValues(av);
+                    }
                 }
             }
         }

@@ -18,7 +18,9 @@ namespace BobsPanicBox
         public bool explosiveTriggerEnabled;
         internal int disableAfter;
         internal int actionAfterTimeout;
-        internal int disableAtAltitude = 100;
+        internal int disableAtAltitudeKm = 100;
+        internal int disableAtAltitude = 100000;
+
         internal float maxTimeoutActionG = 10f;
 
         internal int postAbortAction;
@@ -44,40 +46,43 @@ namespace BobsPanicBox
 
         public void SetAllValues(AbortValues av)
         {
-            this.vertSpeedTriggerEnabled = av.vertSpeedTriggerEnabled;
-            this.vertSpeed = av.vertSpeed;
-
-            this.gForceTriggerEnabled = av.gForceTriggerEnabled;
-            this.gForceTrigger = av.gForceTrigger;
-
-            this.exceedingAoA = av.exceedingAoA;
-            this.maxAoA = av.maxAoA;
-
-            this.explosiveTriggerEnabled = av.explosiveTriggerEnabled;
-            this.disableAfter = av.disableAfter;
-            this.actionAfterTimeout = av.actionAfterTimeout;
-            this.disableAtAltitude = av.disableAtAltitude;
-            this.maxTimeoutActionG = av.maxTimeoutActionG;
-            this.postAbortAction = av.postAbortAction;
-            this.postAbortDelay = av.postAbortDelay;
-            this.delayPostAbortUntilSafe = av.delayPostAbortUntilSafe;
-
-            List<Part> parts;
-            if (HighLogic.LoadedSceneIsEditor)
-                parts = EditorLogic.fetch.ship.parts;
-            else
-                parts = FlightGlobals.ActiveVessel.Parts;
-
-        
-            foreach (var p in parts)
+            if (av != null)
             {
-                var m = p.FindModuleImplementing<Module_BobsPanicBox>();
-                if (m != null)
+                this.vertSpeedTriggerEnabled = av.vertSpeedTriggerEnabled;
+                this.vertSpeed = av.vertSpeed;
+
+                this.gForceTriggerEnabled = av.gForceTriggerEnabled;
+                this.gForceTrigger = av.gForceTrigger;
+
+                this.exceedingAoA = av.exceedingAoA;
+                this.maxAoA = av.maxAoA;
+
+                this.explosiveTriggerEnabled = av.explosiveTriggerEnabled;
+                this.disableAfter = av.disableAfter;
+                this.actionAfterTimeout = av.actionAfterTimeout;
+                this.disableAtAltitudeKm = av.disableAtAltitudeKm;
+                this.disableAtAltitude = av.disableAtAltitudeKm * 1000;
+                this.maxTimeoutActionG = av.maxTimeoutActionG;
+                this.postAbortAction = av.postAbortAction;
+                this.postAbortDelay = av.postAbortDelay;
+                this.delayPostAbortUntilSafe = av.delayPostAbortUntilSafe;
+
+                List<Part> parts;
+                if (HighLogic.LoadedSceneIsEditor)
+                    parts = EditorLogic.fetch.ship.parts;
+                else
+                    parts = FlightGlobals.ActiveVessel.Parts;
+
+
+                foreach (var p in parts)
                 {
-                    m.SetAllValues(av);
+                    var m = p.FindModuleImplementing<Module_BobsPanicBox>();
+                    if (m != null)
+                    {
+                        m.SetAllValues(av);
+                    }
                 }
             }
-           
         }
 
         public bool Changed(Module_BobsPanicBox m)
@@ -97,12 +102,11 @@ namespace BobsPanicBox
                 postAbortDelay != m.postAbortDelay ||
                 delayPostAbortUntilSafe != m.delayPostAbortUntilSafe ||
                 maxTimeoutActionG != m.maxTimeoutActionG ||
-                disableAtAltitude != m.disableAtAltitude;
+                disableAtAltitudeKm != m.disableAtAltitudeKm;
         }
 
         public void SaveCurrent(Module_BobsPanicBox m)
         {
-            Log.Info("AbortValues.SaveCurrent, armed: " + m.armed);
             armed = m.armed;
             status = m.status;
             vertSpeedTriggerEnabled = m.vertSpeedTriggerEnabled;
@@ -114,7 +118,8 @@ namespace BobsPanicBox
             explosiveTriggerEnabled = m.explosiveTriggerEnabled;
             disableAfter = m.disableAfter;
             actionAfterTimeout = m.actionAfterTimeout;
-            disableAtAltitude = m.disableAtAltitude;
+            disableAtAltitudeKm = m.disableAtAltitudeKm;
+            disableAtAltitude = m.disableAtAltitudeKm * 1000;
             maxTimeoutActionG = m.maxTimeoutActionG;
 
             postAbortAction = m.postAbortAction;
@@ -134,7 +139,8 @@ namespace BobsPanicBox
                 m.vm.explosiveTriggerEnabled = m.explosiveTriggerEnabled;
                 m.vm.disableAfter = m.disableAfter;
                 m.vm.actionAfterTimeout = m.actionAfterTimeout;
-                m.vm.disableAtAltitude = m.disableAtAltitude;
+                m.vm.disableAtAltitudeKm = m.disableAtAltitudeKm;
+                m.vm.disableAtAltitude = m.disableAtAltitudeKm * 1000;
                 m.vm.maxTimeoutActionG = m.maxTimeoutActionG;
 
                 m.vm.postAbortAction = m.postAbortAction;

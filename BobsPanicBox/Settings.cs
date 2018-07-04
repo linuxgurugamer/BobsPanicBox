@@ -87,7 +87,7 @@ namespace BobsPanicBox
 
         [GameParameters.CustomIntParameterUI("Disable at altitude (km)", minValue = 1, maxValue = 100,
             toolTip = "Disable when this altitude is reached")]
-        public int disableAtAltitude = 100;
+        public int disableAtAltitudeKm = 100;
 
         [GameParameters.CustomIntParameterUI("Action after timeout", minValue = 0, maxValue = 10,
             toolTip = "Trigger this action after the timeout, 0 = none")]

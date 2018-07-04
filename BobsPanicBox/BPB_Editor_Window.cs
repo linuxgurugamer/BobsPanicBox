@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Text;
 using UnityEngine;
@@ -37,18 +37,31 @@ namespace BobsPanicBox
         internal const string MODNAME = "Bob's Panic Box";
         ToolbarControl toolbarControl;
 
+       
+
+        Vessel lastActiveVessel = null;
+        BPB_VesselModule vmLastActiveVessel;
+        bool buttonRed = false;
+        double lastFlashTime = 0;
+
+        const string NORMAL_BUTTON_BIG = "BobsPanicBox/PluginData/BPB-38";
+        const string NORMAL_BUTTON_SML = "BobsPanicBox/PluginData/BPB-24";
+
+        const string ALERT_BUTTON_BIG = "BobsPanicBox/PluginData/BPB-Red-38";
+        const string ALERT_BUTTON_SML = "BobsPanicBox/PluginData/BPB-Red-24";
+
+        string curSceneStr;
 
         internal void EnableWindow(AbortValues a)
         {
-            Log.Info("BPB_Editor.EnableWindow");
             if (!visible)
             {
                 abortValues = a;
                 visible = true;
                 if (HighLogic.LoadedSceneIsEditor)
-                    scene = "Editor";
+                    curSceneStr = "Editor";
                 else
-                    scene = "Flight";
+                    curSceneStr = "Flight";
 
             }
             else
@@ -59,13 +72,12 @@ namespace BobsPanicBox
 
         void CloseWindow()
         {
-            visible = false;            
+            visible = false;
             abortValues.SetAllValues(abortValues);
             if (toolbarControl != null)
                 toolbarControl.SetFalse(false);
         }
 
-        string scene;
         void OnGUI()
         {
             if (visible)
@@ -73,7 +85,7 @@ namespace BobsPanicBox
                 if (HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().useKSPskin)
                     GUI.skin = HighLogic.Skin;
 
-                bpbWinRect = ClickThruBlocker.GUILayoutWindow(23874244, bpbWinRect, BPB_Window, "Bob's Panic Box: " + scene);
+                bpbWinRect = ClickThruBlocker.GUILayoutWindow(23874244, bpbWinRect, BPB_Window, "Bob's Panic Box: " + curSceneStr);
             }
         }
 
@@ -84,10 +96,75 @@ namespace BobsPanicBox
                 ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.SPH | ApplicationLauncher.AppScenes.VAB,
                 MODID,
                 "bpbButton",
-                "BobsPanicBox/PluginData/BPB-38",
-                "BobsPanicBox/PluginData/BPB-24",
+                NORMAL_BUTTON_BIG,
+                NORMAL_BUTTON_SML,
                 MODNAME
             );
+            if (HighLogic.LoadedSceneIsFlight)
+                StartCoroutine(UpdateButton());
+        }
+
+        void SetButtonNormal()
+        {
+            buttonRed = false;
+            toolbarControl.SetTexture(NORMAL_BUTTON_BIG, NORMAL_BUTTON_SML);
+        }
+
+        void SetButtonRed()
+        {
+            buttonRed = true;
+            toolbarControl.SetTexture(ALERT_BUTTON_BIG, ALERT_BUTTON_SML);
+        }
+
+        IEnumerator UpdateButton()
+        {
+            while (true)
+            {
+                if (FlightGlobals.ActiveVessel != null)
+                {
+                    if (lastActiveVessel != FlightGlobals.ActiveVessel)
+                    {
+                        lastActiveVessel = FlightGlobals.ActiveVessel;
+                        vmLastActiveVessel = FlightGlobals.ActiveVessel.GetComponent<BPB_VesselModule>();
+                    }
+                    if (!lastActiveVessel.IsControllable || lastActiveVessel.Parts.Count == 0)
+                    {
+                        DisableAbortSequence();
+                    }
+                    if (vmLastActiveVessel.aborted && !vmLastActiveVessel.abortAcknowledged)
+                    {
+                        // Flash the button here
+                        if (Planetarium.GetUniversalTime() - lastFlashTime > 0.5f)
+                        {
+                            lastFlashTime = Planetarium.GetUniversalTime();
+                            if (buttonRed)
+                                SetButtonNormal();
+                            else
+                                SetButtonRed();
+                        }
+                    }
+                    else
+                    {
+                        if (vmLastActiveVessel.abortAcknowledged)
+                        {
+                            if (!buttonRed)
+                            {
+                                SetButtonRed();
+                            }
+                        }
+                        else
+                        {
+                            if (buttonRed)
+                            {
+                                SetButtonNormal();
+                            }
+                        }
+                    }
+                }
+                else
+                    SetButtonNormal();
+                yield return new WaitForSeconds(0.5f);
+            }
         }
 
         void ToggleOn()
@@ -108,18 +185,38 @@ namespace BobsPanicBox
             }
             else
             {
+                if (vmLastActiveVessel.aborted && !vmLastActiveVessel.abortAcknowledged)
+                {
+                    ScreenMessages.PostScreenMessage("Abort Acknowledged");
+
+                    vmLastActiveVessel.abortAcknowledged = true;
+                    toolbarControl.SetFalse(false);
+                    return;
+                }
+                if (vmLastActiveVessel.abortAcknowledged)
+                {
+                    DisableAbortSequence();
+                    toolbarControl.SetFalse(false);
+                    return;
+                }
                 foreach (var p in FlightGlobals.ActiveVessel.Parts)
                 {
                     var m = p.FindModuleImplementing<Module_BobsPanicBox>();
                     if (m != null)
                     {
-                        Log.Info("BPB_Editor.ToggleOn");
                         EnableWindow(m.flightInfo.av);
                         return;
                     }
                 }
             }
             toolbarControl.SetFalse(false);
+        }
+        void DisableAbortSequence()
+        {
+            ScreenMessages.PostScreenMessage("Abort Sequence Canceled");
+            vmLastActiveVessel.armed = false;
+            vmLastActiveVessel.aborted = false;
+            vmLastActiveVessel.abortAcknowledged = false;
         }
 
         void Start()
@@ -129,9 +226,10 @@ namespace BobsPanicBox
             {
                 if ((HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().activeInVAB && HighLogic.LoadedSceneIsEditor && EditorDriver.editorFacility == EditorFacility.VAB) ||
                     (HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().activeInSPH && HighLogic.LoadedSceneIsEditor && EditorDriver.editorFacility == EditorFacility.SPH) ||
-                    (HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().allowChangeInFlight && HighLogic.LoadedSceneIsFlight) )
+                    (HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().allowChangeInFlight && HighLogic.LoadedSceneIsFlight))
                     CreateButton();
             }
+
         }
 
         void OnDestroy()
@@ -185,7 +283,7 @@ namespace BobsPanicBox
 
             GUILayout.BeginHorizontal();
             abortValues.exceedingAoA = GUILayout.Toggle(abortValues.exceedingAoA, "Max AoA (degrees): " + abortValues.maxAoA.ToString());
-            if(abortValues.armed && !abortValues.exceedingAoA)
+            if (abortValues.armed && !abortValues.exceedingAoA)
                 GUI.enabled = false;
             GUILayout.FlexibleSpace();
             abortValues.maxAoA = (int)GUILayout.HorizontalSlider(abortValues.maxAoA, 1f, 179f, GUILayout.Width(200));
@@ -200,9 +298,10 @@ namespace BobsPanicBox
             {
                 GUILayout.FlexibleSpace();
                 abortValues.disableAfter = Int32.Parse(GUILayout.TextField(abortValues.disableAfter.ToString(), GUILayout.Width(50)));
-            } catch { }
+            }
+            catch { }
             GUILayout.Space(10);
-            abortValues.disableAfter = (int)GUILayout.HorizontalSlider(abortValues.disableAfter, 10f, 600f, GUILayout.Width(200));        
+            abortValues.disableAfter = (int)GUILayout.HorizontalSlider(abortValues.disableAfter, 10f, 600f, GUILayout.Width(200));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -210,11 +309,11 @@ namespace BobsPanicBox
             try
             {
                 GUILayout.FlexibleSpace();
-                abortValues.disableAtAltitude = Int32.Parse(GUILayout.TextField(abortValues.disableAtAltitude.ToString(), GUILayout.Width(50)));
+                abortValues.disableAtAltitudeKm = Int32.Parse(GUILayout.TextField(abortValues.disableAtAltitudeKm.ToString(), GUILayout.Width(50)));
             }
             catch { }
             GUILayout.Space(10);
-            abortValues.disableAtAltitude = (int)GUILayout.HorizontalSlider(abortValues.disableAtAltitude, 1f, 100f, GUILayout.Width(200));
+            abortValues.disableAtAltitudeKm = (int)GUILayout.HorizontalSlider(abortValues.disableAtAltitudeKm, 1f, 100f, GUILayout.Width(200));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -282,12 +381,38 @@ namespace BobsPanicBox
             }
             if (HighLogic.LoadedSceneIsFlight)
             {
-                if (GUILayout.Button("Apply"))
+                if (vmLastActiveVessel.aborted)
                 {
-                    BPB_VesselModule vm = FlightGlobals.ActiveVessel.GetComponent<BPB_VesselModule>();
-                    vm.SetAllValues(abortValues);
-                    //vm.armed = vm.vertSpeedTriggerEnabled | vm.gForceTriggerEnabled | vm.explosiveTriggerEnabled; 
-                    abortValues.SetAllValues(abortValues);
+                    if (!vmLastActiveVessel.abortAcknowledged)
+                    {
+                        var ack = "Acknowledge";
+                        if (buttonRed)
+                            ack = "<color=red>Acknowledge</color>";
+                        if (GUILayout.Button(ack))
+                        {
+                            vmLastActiveVessel.abortAcknowledged = true;
+                        }
+                    } else
+                    {
+                        if (GUILayout.Button("Disable Abort Sequence"))
+                        {
+                            DisableAbortSequence();
+                        }
+                    }
+                
+                }
+                else
+                {
+                    if (!vmLastActiveVessel.Changed(abortValues))
+                        GUI.enabled = false;
+                    if (GUILayout.Button("Apply"))
+                    {
+                        //BPB_VesselModule vm = FlightGlobals.ActiveVessel.GetComponent<BPB_VesselModule>();
+                        vmLastActiveVessel.SetAllValues(abortValues);
+                        //vm.armed = vm.vertSpeedTriggerEnabled | vm.gForceTriggerEnabled | vm.explosiveTriggerEnabled; 
+                        abortValues.SetAllValues(abortValues);
+                    }
+                    GUI.enabled = true;
                 }
             }
             GUILayout.EndHorizontal();
@@ -297,7 +422,6 @@ namespace BobsPanicBox
 
         internal static void ResetToDefault(ref AbortValues abortValues)
         {
-            Log.Info("BPB_Editor.ResetToDefault, loadedScene: " + HighLogic.LoadedScene);
             if (HighLogic.LoadedSceneIsFlight)
                 abortValues.armed = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().activeAtLaunch;
             else
@@ -307,7 +431,6 @@ namespace BobsPanicBox
                 if (HighLogic.LoadedSceneIsEditor && EditorDriver.editorFacility == EditorFacility.SPH)
                     abortValues.armed = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().activeInSPH;
             }
-            Log.Info("ResetToDefault, armed: " + abortValues.armed);
             abortValues.vertSpeedTriggerEnabled = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().negativeVelDetection;
             abortValues.gForceTriggerEnabled = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().highGDetection;
             abortValues.vertSpeed = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().defaultNegVel;

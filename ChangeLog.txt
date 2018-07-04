@@ -1,3 +1,14 @@
+0.0.1.4
+	Cleaned up the on-screen messages a bit
+	Added button flashing when abort is active on active vessel
+		Click the button to acknowledge the abort, button will stay red
+		Click a second time to cancel the post-abort sequence, button will go back to normal
+	Changed disableAtAltitude to disableAtAltitudeKm
+	Added new disableAtAltitude, always set to 1000 * disableAtAltitudeKm, to avoid doing multiplication during flight
+	Added check for changed data, if no data changed in window, Apply button is now disabled
+	Added button to window in flight to Acknowledge and Disable  abort, for when an abort happens
+	Abort sequence now disables if no control source
+
 0.0.1.3
 	Changed messages to reflect where the abort was.  If on active vessel, will be in red, otherwise will be in yellow
 	Reformatted messages to fix on single lines

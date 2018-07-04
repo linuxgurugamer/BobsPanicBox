@@ -15,7 +15,6 @@ namespace BobsPanicBox
         }
         public void SaveCurrent(Module_BobsPanicBox m)
         {
-            Log.Info("Flight.SaveCurrent");
             av.SaveCurrent(m);
         }
         public bool Changed(Module_BobsPanicBox m)
@@ -25,13 +24,16 @@ namespace BobsPanicBox
 
         public void SetAllValues(Vessel vessel, AbortValues a)
         {
-            av = a;
-            foreach (var p in vessel.parts)
+            if (a != null)
             {
-                var m = p.FindModuleImplementing<Module_BobsPanicBox>();
-                if (m != null)
+                av = a;
+                foreach (var p in vessel.parts)
                 {
-                    m.SetAllValues(av);
+                    var m = p.FindModuleImplementing<Module_BobsPanicBox>();
+                    if (m != null)
+                    {
+                        m.SetAllValues(av);
+                    }
                 }
             }
         }

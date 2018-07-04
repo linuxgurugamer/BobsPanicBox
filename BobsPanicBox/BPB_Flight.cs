@@ -13,7 +13,7 @@ namespace BobsPanicBox
         Vessel lastActiveVessel;
         BPB_VesselModule vm;
 
-        bool printed = false;
+        bool timeoutInProgress = false;
 
         void Start2()
         {
@@ -26,23 +26,15 @@ namespace BobsPanicBox
                 if (FlightGlobals.ActiveVessel.missionTime > vm.disableAfter)
                 {
                     vm.armed = false;
-                    Log.Info("BPB_Flight.Start, setting armed = false due to missionTime after vm.disableAfter");
                 }
             }
         }
-        bool timeoutInProgress = false;
-        public void Update()
+
+        public void FixedUpdate()
         {
             if (HighLogic.LoadedSceneIsFlight)
             {
                 Vessel v = lastActiveVessel;
-
-                if (!printed)
-                {
-                    Log.Info("BPB_Flight, vessel.id: " + v.id);
-                    printed = true;
-                }
-
 
                 if (v != lastActiveVessel)
                 {
@@ -52,14 +44,17 @@ namespace BobsPanicBox
 
                 if (vm.armed && !vm.aborted && !v.ActionGroups[KSPActionGroup.Abort])
                 {
-                    if (v.missionTime <= vm.disableAfter && v.altitude <= vm.disableAtAltitude * 1000)
+                    // Check to be sure it should still be active
+                    if (v.missionTime <= vm.disableAfter && v.altitude <= vm.disableAtAltitudeKm * 1000)
                     {
+                        // check for negative vertical speed
                         if (v.verticalSpeed < vm.vertSpeed && vm.vertSpeedTriggerEnabled)
                         {
-                            if (this.vessel == FlightGlobals.ActiveVessel)
-                                ScreenMessages.PostScreenMessage("<color=red>ABORTING - BPB Negative Vertical Velocity Detected!</color>", 10f);
+                            //if (this.vessel == FlightGlobals.ActiveVessel)
+                            if (this.vessel.isActiveVessel)
+                                ScreenMessages.PostScreenMessage("<color=red>ABORTING - Negative Vertical Velocity Detected!</color>", 10f);
                             else
-                                ScreenMessages.PostScreenMessage("ABORTING - BPB Negative Vertical Velocity Detected!");
+                                ScreenMessages.PostScreenMessage("ABORTING - Negative Vertical Velocity Detected!");
 
                             ScreenMessages.PostScreenMessage(v.verticalSpeed + " m/s", 10f);
                             v.ActionGroups.SetGroup(KSPActionGroup.Abort, true);
@@ -67,12 +62,14 @@ namespace BobsPanicBox
 
                         }
 
+                        // Check for G forces too high
                         if (v.geeForce > vm.gForceTrigger && vm.gForceTriggerEnabled)
                         {
-                            if (this.vessel == FlightGlobals.ActiveVessel)
-                                ScreenMessages.PostScreenMessage("<color=red>ABORTING - BPB High G-Force Detected!</color>", 10f);
+                            //if (this.vessel == FlightGlobals.ActiveVessel)
+                            if (this.vessel.isActiveVessel)
+                                ScreenMessages.PostScreenMessage("<color=red>ABORTING - High G-Force Detected!</color>", 10f);
                             else
-                                ScreenMessages.PostScreenMessage("ABORTING - BPB High G-Force Detected!");
+                                ScreenMessages.PostScreenMessage("ABORTING - High G-Force Detected!");
 
                             ScreenMessages.PostScreenMessage(v.geeForce + " Gs", 10f);
                             v.ActionGroups.SetGroup(KSPActionGroup.Abort, true);
@@ -80,13 +77,15 @@ namespace BobsPanicBox
 
                         }
 
+                        // Check for AoA too high.  Also make sure that the velocity is >10 to avoid the
+                        // inevitable jitter before launch
                         if (vm.exceedingAoA && v.GetSrfVelocity().magnitude > 10 && v.missionTime > 1)
                         {
                             var v3d1 = Vector3d.Angle(v.GetTransform().up, v.GetSrfVelocity());
-                            Log.Info("BPB_Flight.Update, v3d1: " + v3d1);
                             if (v3d1 > vm.maxAoA)
                             {
-                                if (this.vessel == FlightGlobals.ActiveVessel)
+                                //if (this.vessel == FlightGlobals.ActiveVessel)
+                                if (this.vessel.isActiveVessel)
                                     ScreenMessages.PostScreenMessage("<color=red>ABORTING - Max AoA Exceeded!</color>", 10f);
                                 else
                                     ScreenMessages.PostScreenMessage("ABORTING - Max AoA Exceeded!");
@@ -101,7 +100,6 @@ namespace BobsPanicBox
                     {
                         if (!timeoutInProgress)
                         {
-                            Log.Info("timeoutInProgress");
                             timeoutInProgress = true;
                         }
                         if (timeoutInProgress && v.geeForce <= vm.maxTimeoutActionG)
@@ -110,13 +108,15 @@ namespace BobsPanicBox
                             timeoutInProgress = false;
                             if (v.missionTime > vm.disableAfter)
                             {
-                                if (this.vessel == FlightGlobals.ActiveVessel)
+                                //if (this.vessel == FlightGlobals.ActiveVessel)
+                                if (this.vessel.isActiveVessel)
                                     ScreenMessages.PostScreenMessage("Bob's Panic Box disabled due to timeout", 10f);
                                 Log.Info("Bob's Panic Box disabled due to timeout");
                             }
-                            if (v.altitude > vm.disableAtAltitude * 1000)
+                            if (v.altitude > vm.disableAtAltitude)
                             {
-                                if (this.vessel == FlightGlobals.ActiveVessel)
+                                //if (this.vessel == FlightGlobals.ActiveVessel)
+                                if (this.vessel.isActiveVessel)
                                     ScreenMessages.PostScreenMessage("Bob's Panic Box disabled due to altitude", 10f);
                                 Log.Info("Bob's Panic Box disabled due to altitude");
                             }
@@ -124,7 +124,6 @@ namespace BobsPanicBox
                             if (vm.actionAfterTimeout > 0)
                             {
                                 var kg = GetActionGroup((int)vm.actionAfterTimeout);
-                                Log.Info("Calling action group: " + kg);
                                 v.ActionGroups.SetGroup(kg, true);
                             }
                         }
@@ -139,19 +138,15 @@ namespace BobsPanicBox
                         // Check for safechute
                         // check for chutes
                         var pa = v.FindPartModulesImplementing<ModuleParachute>();
-                        Log.Info("Parachutes found: " + pa.Count);
                         if (pa != null && pa.Count > 0)
                         {
                             foreach (ModuleParachute chute in pa)
                             {
                                 if (chute.deploymentState == ModuleParachute.deploymentStates.STOWED && FlightGlobals.ActiveVessel.atmDensity > 0)
                                 {
-                                    Log.Info("chute.deploySafe: " + chute.deploySafe);
-
                                     if (chute.deploySafe == "Safe")
                                     {
                                         var kg = GetActionGroup(vm.postAbortAction);
-                                        Log.Info("Calling action group: " + kg);
                                         v.ActionGroups.SetGroup(kg, true);
                                         vm.postAbortActionCompleted = true;
                                     }
@@ -161,7 +156,6 @@ namespace BobsPanicBox
                         else
                         {
                             var kg = GetActionGroup(vm.postAbortAction);
-                            Log.Info("Calling action group: " + kg);
                             v.ActionGroups.SetGroup(kg, true);
                             vm.postAbortActionCompleted = true;
                         }

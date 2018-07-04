@@ -12,6 +12,9 @@ namespace BobsPanicBox
         internal bool aborted = false;
 
         [KSPField(isPersistant = true)]
+        internal bool abortAcknowledged = false;
+
+        [KSPField(isPersistant = true)]
         internal double abortTime = 0;
 
         [KSPField(isPersistant = true)]
@@ -51,7 +54,10 @@ namespace BobsPanicBox
         internal int actionAfterTimeout = 0;
 
         [KSPField(isPersistant = true)]
-        internal int disableAtAltitude = 100;
+        internal int disableAtAltitudeKm = 100;
+
+        [KSPField(isPersistant = true)]
+        internal int disableAtAltitude = 100000;
 
         [KSPField(isPersistant = true)]
         internal float maxTimeoutActionG = 10f;
@@ -77,7 +83,6 @@ namespace BobsPanicBox
 
         public void SetAllActive(bool aborted, bool armed, string status)
         {
-            Log.Info("SetAllActive, aborted: " + aborted + ", armed: " + armed + ", status: " + status);
             this.aborted = aborted;
             if (aborted)
                 this.abortTime = vessel.missionTime;
@@ -97,38 +102,60 @@ namespace BobsPanicBox
 
         public void SetAllValues(AbortValues a)
         {
-            this.armed = a.armed;
-            this.vertSpeedTriggerEnabled = a.vertSpeedTriggerEnabled;
-            this.vertSpeed = a.vertSpeed;
-
-            this.gForceTriggerEnabled = a.gForceTriggerEnabled;
-            this.gForceTrigger = a.gForceTrigger;
-
-            this.exceedingAoA = a.exceedingAoA;
-            this.maxAoA = a.maxAoA;
-
-            this.explosiveTriggerEnabled = a.explosiveTriggerEnabled;
-            this.disableAfter = a.disableAfter;
-            this.actionAfterTimeout = a.actionAfterTimeout;
-            this.disableAtAltitude = a.disableAtAltitude;
-            this.maxTimeoutActionG = a.maxTimeoutActionG;
-            this.postAbortAction = a.postAbortAction;
-            this.postAbortDelay = a.postAbortDelay;
-            this.delayPostAbortUntilSafe = a.delayPostAbortUntilSafe;
-            av = a;
-
-            foreach (var p in this.vessel.Parts)
+            if (a != null)
             {
-                var m = p.FindModuleImplementing<Module_BobsPanicBox>();
-                if (m != null)
-                    m.SetAllValues(av);        
+                this.armed = a.armed;
+                this.vertSpeedTriggerEnabled = a.vertSpeedTriggerEnabled;
+                this.vertSpeed = a.vertSpeed;
 
+                this.gForceTriggerEnabled = a.gForceTriggerEnabled;
+                this.gForceTrigger = a.gForceTrigger;
+
+                this.exceedingAoA = a.exceedingAoA;
+                this.maxAoA = a.maxAoA;
+
+                this.explosiveTriggerEnabled = a.explosiveTriggerEnabled;
+                this.disableAfter = a.disableAfter;
+                this.actionAfterTimeout = a.actionAfterTimeout;
+                this.disableAtAltitudeKm = a.disableAtAltitudeKm;
+                this.disableAtAltitude = a.disableAtAltitudeKm * 1000;
+                this.maxTimeoutActionG = a.maxTimeoutActionG;
+                this.postAbortAction = a.postAbortAction;
+                this.postAbortDelay = a.postAbortDelay;
+                this.delayPostAbortUntilSafe = a.delayPostAbortUntilSafe;
+                av = a;
+
+                foreach (var p in this.vessel.Parts)
+                {
+                    var m = p.FindModuleImplementing<Module_BobsPanicBox>();
+                    if (m != null)
+                        m.SetAllValues(av);
+
+                }
             }
         }
 
+        public bool Changed(AbortValues m)
+        {
+            return armed != m.armed ||
+                status != m.status ||
+                vertSpeedTriggerEnabled != m.vertSpeedTriggerEnabled ||
+                vertSpeed != m.vertSpeed ||
+                gForceTriggerEnabled != m.gForceTriggerEnabled ||
+                gForceTrigger != m.gForceTrigger ||
+                explosiveTriggerEnabled != m.explosiveTriggerEnabled ||
+                disableAfter != m.disableAfter ||
+                exceedingAoA != m.exceedingAoA ||
+                maxAoA != m.maxAoA ||
+                actionAfterTimeout != m.actionAfterTimeout ||
+                postAbortAction != m.postAbortAction ||
+                postAbortDelay != m.postAbortDelay ||
+                delayPostAbortUntilSafe != m.delayPostAbortUntilSafe ||
+                maxTimeoutActionG != m.maxTimeoutActionG ||
+                disableAtAltitudeKm != m.disableAtAltitudeKm;
+        }
         public void TriggerAbort()
         {
-            Log.Info("Triggering abort, vessel: " + vessel.name + ", vessel id: " + vessel.id);
             vessel.ActionGroups.SetGroup(KSPActionGroup.Abort, true);
         }
     }
