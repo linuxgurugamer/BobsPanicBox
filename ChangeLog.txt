@@ -1,3 +1,6 @@
+0.0.1.5
+	Fixed bug with decoupling and undocking.  After decouple or undock, new vessel had a mission time of 0, thereby sometimes reactiving the mod in deep space
+
 0.0.1.4
 	Cleaned up the on-screen messages a bit
 	Added button flashing when abort is active on active vessel

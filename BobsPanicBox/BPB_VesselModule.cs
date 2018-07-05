@@ -7,6 +7,11 @@ namespace BobsPanicBox
 {
     partial class BPB_VesselModule : VesselModule
     {
+        [KSPField(isPersistant = true)]
+        internal Guid vesselGuid = Guid.Empty;
+
+        [KSPField(isPersistant = true)]
+        internal double missionTime;
 
         [KSPField(isPersistant = true)]
         internal bool aborted = false;
