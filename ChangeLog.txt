@@ -1,5 +1,9 @@
+0.0.1.6
+	Fixed constant message of Abort Sequence Canceled
+
 0.0.1.5
 	Fixed bug with decoupling and undocking.  After decouple or undock, new vessel had a mission time of 0, thereby sometimes reactiving the mod in deep space
+	Changed min version to be 1.4.3
 
 0.0.1.4
 	Cleaned up the on-screen messages a bit

@@ -127,7 +127,7 @@ namespace BobsPanicBox
                         lastActiveVessel = FlightGlobals.ActiveVessel;
                         vmLastActiveVessel = FlightGlobals.ActiveVessel.GetComponent<BPB_VesselModule>();
                     }
-                    if (!lastActiveVessel.IsControllable || lastActiveVessel.Parts.Count == 0)
+                    if (vmLastActiveVessel.armed && (!lastActiveVessel.IsControllable || lastActiveVessel.Parts.Count == 0))
                     {
                         DisableAbortSequence();
                     }
