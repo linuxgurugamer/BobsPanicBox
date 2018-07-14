@@ -1,3 +1,7 @@
+0.0.1.7
+	Fixed issue with explosions being detected on the launchpad before launching
+	Added dependency checking
+
 0.0.1.6
 	Fixed constant message of Abort Sequence Canceled
 

@@ -14,12 +14,13 @@ namespace BobsPanicBox
         {
             if (HighLogic.LoadedSceneIsFlight)
             {
-                if (vessel != null && !vessel.HoldPhysics && FlightGlobals﻿.ready)
+                if (vessel != null && !vessel.HoldPhysics && FlightGlobals﻿.ready && vessel.missionTime > 0)
                 {
                     BPB_VesselModule vm = vessel.GetComponent<BPB_VesselModule>();
                     if (vm != null && vm.armed && vm.explosiveTriggerEnabled && !revert)
                     {
-                        //if (this.vessel == FlightGlobals.ActiveVessel)
+
+                        Log.Info("Explosion detected, part: " + part.partInfo.title);
                         if (this.vessel.isActiveVessel)
                         {
                             ScreenMessages.PostScreenMessage("<color=red>ABORTING - Explosion Detected!</color>");
