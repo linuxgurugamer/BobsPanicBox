@@ -27,7 +27,7 @@ namespace BobsPanicBox
             var vm = v.GetComponent<BPB_VesselModule>();
             vm.missionTime = FlightGlobals.ActiveVessel.missionTime;
         }
-  
+
 
         void onVesselsUndocking(Vessel v1, Vessel v2)
         {
@@ -37,7 +37,7 @@ namespace BobsPanicBox
             vm2.missionTime = vm1.missionTime;
         }
 
-    
+
     }
     partial class BPB_VesselModule : VesselModule
     {
@@ -55,16 +55,16 @@ namespace BobsPanicBox
                 //vm = v.GetComponent<BPB_VesselModule>();
 
 
-//                if (FlightGlobals.ActiveVessel.missionTime > vm.disableAfter)
-                    //if (FlightGlobals.ActiveVessel.missionTime > disableAfter)
-                    if (this.missionTime > disableAfter)
-                    {
-                        //vm.armed = false;
-                        armed = false;
+                //                if (FlightGlobals.ActiveVessel.missionTime > vm.disableAfter)
+                //if (FlightGlobals.ActiveVessel.missionTime > disableAfter)
+                if (this.missionTime > disableAfter)
+                {
+                    //vm.armed = false;
+                    armed = false;
                 }
                 GameEvents.onPartUndock.Add(onPartUndock);
                 GameEvents.onPartUndockComplete.Add(onPartUndockComplete);
-            }            
+            }
         }
         void onPartUndock(Part p)
         {
@@ -90,7 +90,7 @@ namespace BobsPanicBox
             }
             else
             {
-                vesselGuid = this.vessel.id;                
+                vesselGuid = this.vessel.id;
                 //Log.Info("vesselGuid: " + vesselGuid);
                 //Log.Info("guid missionTime: " + vessel.missionTime);
             }
@@ -107,7 +107,7 @@ namespace BobsPanicBox
                 //}
 
                 //if (vm.armed && !vm.aborted && !v.ActionGroups[KSPActionGroup.Abort])
-                if (armed && !aborted && !v.ActionGroups[KSPActionGroup.Abort])
+                if (armed && !aborted && !v.ActionGroups[KSPActionGroup.Abort] && missionTime > 0)
                 {
                     // Check to be sure it should still be active
                     //if (v.missionTime <= vm.disableAfter && v.altitude <= vm.disableAtAltitudeKm * 1000)
@@ -117,9 +117,9 @@ namespace BobsPanicBox
                         // check for negative vertical speed
                         //if (v.verticalSpeed < vm.vertSpeed && vm.vertSpeedTriggerEnabled)
                         if (v.verticalSpeed < vertSpeed && vertSpeedTriggerEnabled)
-                            {
-                                //if (this.vessel == FlightGlobals.ActiveVessel)
-                                if (this.vessel.isActiveVessel)
+                        {
+                            //if (this.vessel == FlightGlobals.ActiveVessel)
+                            if (this.vessel.isActiveVessel)
                                 ScreenMessages.PostScreenMessage("<color=red>ABORTING - Negative Vertical Velocity Detected!</color>", 10f);
                             else
                                 ScreenMessages.PostScreenMessage("ABORTING - Negative Vertical Velocity Detected!");
@@ -150,10 +150,10 @@ namespace BobsPanicBox
                         // Check for AoA too high.  Also make sure that the velocity is >10 to avoid the
                         // inevitable jitter before launch
                         //if (vm.exceedingAoA && v.GetSrfVelocity().magnitude > 10 && v.missionTime > 1)
-                            if (vm.exceedingAoA && v.GetSrfVelocity().magnitude > 10 && this.missionTime > 1)
-
-                            {
-                                var v3d1 = Vector3d.Angle(v.GetTransform().up, v.GetSrfVelocity());
+                        if (vm.exceedingAoA && v.GetSrfVelocity().magnitude > 10 && missionTime > 10 && v.altitude <= vm.ignoreAoAAboveAltitude)
+                        {
+                            Log.Info("AoA check, velocity: " + v.GetSrfVelocity().magnitude + ", missionTime: " + missionTime + ", altitude: " + v.altitude + ", ignoreAoAAboveAltitude: " + vm.ignoreAoAAboveAltitude);
+                            var v3d1 = Vector3d.Angle(v.GetTransform().up, v.GetSrfVelocity());
                             if (v3d1 > vm.maxAoA)
                             {
                                 //if (this.vessel == FlightGlobals.ActiveVessel)

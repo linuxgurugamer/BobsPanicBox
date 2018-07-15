@@ -288,6 +288,20 @@ namespace BobsPanicBox
             GUILayout.FlexibleSpace();
             abortValues.maxAoA = (int)GUILayout.HorizontalSlider(abortValues.maxAoA, 1f, 179f, GUILayout.Width(200));
             GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Ignore AoA above altitude (km):");
+            try
+            {
+                GUILayout.FlexibleSpace();
+                abortValues.ignoreAoAAboveAltitudeKm = Int32.Parse(GUILayout.TextField(abortValues.ignoreAoAAboveAltitudeKm.ToString(), GUILayout.Width(50)));
+            }
+            catch { }
+            GUILayout.Space(10);
+            abortValues.ignoreAoAAboveAltitudeKm = (int)GUILayout.HorizontalSlider(abortValues.ignoreAoAAboveAltitudeKm, 1f, 100f, GUILayout.Width(200));
+            GUILayout.EndHorizontal();
+
+
             if (abortValues.armed && !abortValues.exceedingAoA)
                 GUI.enabled = true;
 

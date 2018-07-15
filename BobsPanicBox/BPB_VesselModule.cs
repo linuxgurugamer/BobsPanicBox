@@ -65,6 +65,11 @@ namespace BobsPanicBox
         internal int disableAtAltitude = 100000;
 
         [KSPField(isPersistant = true)]
+        internal int ignoreAoAAboveAltitudeKm = 100;
+        [KSPField(isPersistant = true)]
+        internal int ignoreAoAAboveAltitude = 100000;
+
+        [KSPField(isPersistant = true)]
         internal float maxTimeoutActionG = 10f;
 
 
@@ -124,6 +129,8 @@ namespace BobsPanicBox
                 this.actionAfterTimeout = a.actionAfterTimeout;
                 this.disableAtAltitudeKm = a.disableAtAltitudeKm;
                 this.disableAtAltitude = a.disableAtAltitudeKm * 1000;
+                this.ignoreAoAAboveAltitudeKm = a.ignoreAoAAboveAltitudeKm;
+                this.ignoreAoAAboveAltitude = a.ignoreAoAAboveAltitudeKm * 1000;
                 this.maxTimeoutActionG = a.maxTimeoutActionG;
                 this.postAbortAction = a.postAbortAction;
                 this.postAbortDelay = a.postAbortDelay;
@@ -157,7 +164,8 @@ namespace BobsPanicBox
                 postAbortDelay != m.postAbortDelay ||
                 delayPostAbortUntilSafe != m.delayPostAbortUntilSafe ||
                 maxTimeoutActionG != m.maxTimeoutActionG ||
-                disableAtAltitudeKm != m.disableAtAltitudeKm;
+                disableAtAltitudeKm != m.disableAtAltitudeKm ||
+                ignoreAoAAboveAltitudeKm != m.ignoreAoAAboveAltitudeKm;
         }
         public void TriggerAbort()
         {

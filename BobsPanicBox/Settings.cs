@@ -78,6 +78,10 @@ namespace BobsPanicBox
             toolTip = "Abort if the Max AoA is exceeded")]
         public bool exceedingAoA = false;
 
+        [GameParameters.CustomIntParameterUI("Ignore AoA above altitude (km)", minValue = 1, maxValue = 100)]
+        public int ignoreAoAAboveAltitudeKm = 100;
+
+
         [GameParameters.CustomIntParameterUI("Max AoA", minValue = 1, maxValue = 180)]
         public int maxAoA = 20;
 

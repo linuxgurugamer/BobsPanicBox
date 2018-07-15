@@ -29,6 +29,11 @@ namespace BobsPanicBox
         internal int disableAtAltitude = 100000;
 
         [KSPField(isPersistant = true)]
+        internal int ignoreAoAAboveAltitudeKm = 100;
+        [KSPField(isPersistant = true)]
+        internal int ignoreAoAAboveAltitude = 100000;
+
+        [KSPField(isPersistant = true)]
         internal float maxTimeoutActionG = 10f;
 
         [KSPField(isPersistant = true)]
@@ -105,6 +110,8 @@ namespace BobsPanicBox
                 this.actionAfterTimeout = a.actionAfterTimeout;
                 this.disableAtAltitudeKm = a.disableAtAltitudeKm;
                 this.disableAtAltitude = a.disableAtAltitudeKm * 1000;
+                this.ignoreAoAAboveAltitudeKm = a.ignoreAoAAboveAltitudeKm;
+                this.ignoreAoAAboveAltitude = a.ignoreAoAAboveAltitudeKm * 1000;
                 this.maxTimeoutActionG = a.maxTimeoutActionG;
                 this.postAbortAction = a.postAbortAction;
                 this.postAbortDelay = a.postAbortDelay;
@@ -184,6 +191,8 @@ namespace BobsPanicBox
                     editorInfo.av.actionAfterTimeout = actionAfterTimeout;
                     editorInfo.av.disableAtAltitudeKm = disableAtAltitudeKm;
                     editorInfo.av.disableAtAltitude = disableAtAltitudeKm * 1000;
+                    editorInfo.av.ignoreAoAAboveAltitudeKm = ignoreAoAAboveAltitudeKm;
+                    editorInfo.av.ignoreAoAAboveAltitude = ignoreAoAAboveAltitudeKm * 1000;
                     editorInfo.av.maxTimeoutActionG = maxTimeoutActionG;
                     editorInfo.av.postAbortAction = postAbortAction;
                     editorInfo.av.postAbortDelay = postAbortDelay;
@@ -204,6 +213,8 @@ namespace BobsPanicBox
                     flightInfo.av.actionAfterTimeout = actionAfterTimeout;
                     flightInfo.av.disableAtAltitudeKm = disableAtAltitudeKm;
                     flightInfo.av.disableAtAltitude = disableAtAltitudeKm * 1000;
+                    flightInfo.av.ignoreAoAAboveAltitudeKm = ignoreAoAAboveAltitudeKm;
+                    flightInfo.av.ignoreAoAAboveAltitude = ignoreAoAAboveAltitudeKm * 1000;
                     flightInfo.av.maxTimeoutActionG = maxTimeoutActionG;
                     flightInfo.av.postAbortAction = postAbortAction;
                     flightInfo.av.postAbortDelay = postAbortDelay;

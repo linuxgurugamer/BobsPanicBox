@@ -1,3 +1,6 @@
+0.0.1.8
+	Added parameter to ignore AoA above specified altitude
+
 0.0.1.7
 	Fixed issue with explosions being detected on the launchpad before launching
 	Added dependency checking

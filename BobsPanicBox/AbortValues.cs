@@ -20,6 +20,8 @@ namespace BobsPanicBox
         internal int actionAfterTimeout;
         internal int disableAtAltitudeKm = 100;
         internal int disableAtAltitude = 100000;
+        internal int ignoreAoAAboveAltitudeKm = 100;
+        internal int ignoreAoAAboveAltitude = 100000;
 
         internal float maxTimeoutActionG = 10f;
 
@@ -62,6 +64,8 @@ namespace BobsPanicBox
                 this.actionAfterTimeout = av.actionAfterTimeout;
                 this.disableAtAltitudeKm = av.disableAtAltitudeKm;
                 this.disableAtAltitude = av.disableAtAltitudeKm * 1000;
+                this.ignoreAoAAboveAltitudeKm = av.ignoreAoAAboveAltitudeKm;
+                this.ignoreAoAAboveAltitude = av.ignoreAoAAboveAltitudeKm * 1000;
                 this.maxTimeoutActionG = av.maxTimeoutActionG;
                 this.postAbortAction = av.postAbortAction;
                 this.postAbortDelay = av.postAbortDelay;
@@ -102,7 +106,8 @@ namespace BobsPanicBox
                 postAbortDelay != m.postAbortDelay ||
                 delayPostAbortUntilSafe != m.delayPostAbortUntilSafe ||
                 maxTimeoutActionG != m.maxTimeoutActionG ||
-                disableAtAltitudeKm != m.disableAtAltitudeKm;
+                disableAtAltitudeKm != m.disableAtAltitudeKm ||
+                ignoreAoAAboveAltitudeKm != m.ignoreAoAAboveAltitudeKm;
         }
 
         public void SaveCurrent(Module_BobsPanicBox m)
@@ -120,6 +125,8 @@ namespace BobsPanicBox
             actionAfterTimeout = m.actionAfterTimeout;
             disableAtAltitudeKm = m.disableAtAltitudeKm;
             disableAtAltitude = m.disableAtAltitudeKm * 1000;
+            ignoreAoAAboveAltitudeKm = m.ignoreAoAAboveAltitudeKm;
+            ignoreAoAAboveAltitude = m.ignoreAoAAboveAltitudeKm * 1000;
             maxTimeoutActionG = m.maxTimeoutActionG;
 
             postAbortAction = m.postAbortAction;
@@ -141,6 +148,8 @@ namespace BobsPanicBox
                 m.vm.actionAfterTimeout = m.actionAfterTimeout;
                 m.vm.disableAtAltitudeKm = m.disableAtAltitudeKm;
                 m.vm.disableAtAltitude = m.disableAtAltitudeKm * 1000;
+                m.vm.ignoreAoAAboveAltitudeKm = m.ignoreAoAAboveAltitudeKm;
+                m.vm.ignoreAoAAboveAltitude = m.ignoreAoAAboveAltitudeKm * 1000;
                 m.vm.maxTimeoutActionG = m.maxTimeoutActionG;
 
                 m.vm.postAbortAction = m.postAbortAction;
