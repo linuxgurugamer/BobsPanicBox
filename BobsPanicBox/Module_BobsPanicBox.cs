@@ -12,7 +12,7 @@ namespace BobsPanicBox
         internal BPB_VesselModule vm;
         internal AbortValues av;
 
-        static internal Editor editorInfo = new Editor();
+        static internal Editor editorInfo = null;
         internal Flight flightInfo;
 
  
@@ -134,22 +134,28 @@ namespace BobsPanicBox
                     }
                 }
             }
-            BPB_Editor_Window.ResetToDefault(ref av);
+            av.ResetToDefault();
             SetAllValues(av);
         }
 
         void Start()
         {
+            if (!HighLogic.LoadedSceneIsFlight && !HighLogic.LoadedSceneIsEditor)
+                return;
             if (HighLogic.LoadedSceneIsFlight)
             {
                 vm = this.vessel.GetComponent<BPB_VesselModule>();
                 flightInfo = new Flight();
                 av = new AbortValues(flightInfo);
-
                 Events["openAutoAbort"].guiActive = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().allowChangeInFlight && HighLogic.CurrentGame.Parameters.CustomParams<BPB_UI_Options>().pawWindow;
             }
             else
             {
+                if (editorInfo == null)
+                {
+                    editorInfo = new Editor();
+                    SetAllValues(editorInfo.av);
+                }
                 if (HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().activeInVAB && EditorDriver.editorFacility == EditorFacility.VAB)
                     Events["openAutoAbort"].guiActive = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().activeInVAB && HighLogic.CurrentGame.Parameters.CustomParams<BPB_UI_Options>().pawWindow;
                 if (HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().activeInSPH && EditorDriver.editorFacility == EditorFacility.SPH)
@@ -166,12 +172,12 @@ namespace BobsPanicBox
                 }
                 else
                 {
-
-                   
-                    BPB_Editor_Window.ResetToDefault(ref flightInfo.av);
+                    
+                    flightInfo.av.ResetToDefault();
                     SetAllValues(av);
 
                     flightInfo.SaveCurrent(this);
+                   
                 }
                 initted = true;
             }
@@ -197,6 +203,7 @@ namespace BobsPanicBox
                     editorInfo.av.postAbortAction = postAbortAction;
                     editorInfo.av.postAbortDelay = postAbortDelay;
                     editorInfo.av.delayPostAbortUntilSafe = delayPostAbortUntilSafe;
+                    
                     SetAllValues(editorInfo.av);
                 }
                 else

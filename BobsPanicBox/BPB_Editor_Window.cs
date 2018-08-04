@@ -52,11 +52,12 @@ namespace BobsPanicBox
 
         string curSceneStr;
 
+
         internal void EnableWindow(AbortValues a)
         {
             if (!visible)
             {
-                abortValues = a;
+                abortValues = (AbortValues)a.Clone();
                 visible = true;
                 if (HighLogic.LoadedSceneIsEditor)
                     curSceneStr = "Editor";
@@ -100,8 +101,6 @@ namespace BobsPanicBox
                 NORMAL_BUTTON_SML,
                 MODNAME
             );
-            if (HighLogic.LoadedSceneIsFlight)
-                StartCoroutine(UpdateButton());
         }
 
         void SetButtonNormal()
@@ -131,7 +130,7 @@ namespace BobsPanicBox
                     {
                         DisableAbortSequence();
                     }
-                    if (vmLastActiveVessel.aborted && !vmLastActiveVessel.abortAcknowledged)
+                    if (toolbarControl != null && vmLastActiveVessel.aborted && !vmLastActiveVessel.abortAcknowledged)
                     {
                         // Flash the button here
                         if (Planetarium.GetUniversalTime() - lastFlashTime > 0.5f)
@@ -162,7 +161,8 @@ namespace BobsPanicBox
                     }
                 }
                 else
-                    SetButtonNormal();
+                    if (toolbarControl != null)
+                        SetButtonNormal();
                 yield return new WaitForSeconds(0.5f);
             }
         }
@@ -211,6 +211,7 @@ namespace BobsPanicBox
             }
             toolbarControl.SetFalse(false);
         }
+
         void DisableAbortSequence()
         {
             ScreenMessages.PostScreenMessage("Abort Sequence Canceled");
@@ -229,7 +230,8 @@ namespace BobsPanicBox
                     (HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().allowChangeInFlight && HighLogic.LoadedSceneIsFlight))
                     CreateButton();
             }
-
+            if (HighLogic.LoadedSceneIsFlight)
+                StartCoroutine(UpdateButton());
         }
 
         void OnDestroy()
@@ -255,7 +257,7 @@ namespace BobsPanicBox
             GUILayout.EndHorizontal();
             if (!abortValues.armed)
                 GUI.enabled = false;
-
+            
             GUILayout.BeginHorizontal();
             abortValues.explosiveTriggerEnabled = GUILayout.Toggle(abortValues.explosiveTriggerEnabled, "Arm Explosion Detection");
             GUILayout.EndHorizontal();
@@ -269,7 +271,6 @@ namespace BobsPanicBox
             GUILayout.EndHorizontal();
             if (abortValues.armed && !abortValues.vertSpeedTriggerEnabled)
                 GUI.enabled = true;
-
 
             GUILayout.BeginHorizontal();
             abortValues.gForceTriggerEnabled = GUILayout.Toggle(abortValues.gForceTriggerEnabled, "High-G-Limit (G): " + abortValues.gForceTrigger.ToString("F1"));
@@ -300,7 +301,6 @@ namespace BobsPanicBox
             GUILayout.Space(10);
             abortValues.ignoreAoAAboveAltitudeKm = (int)GUILayout.HorizontalSlider(abortValues.ignoreAoAAboveAltitudeKm, 1f, 100f, GUILayout.Width(200));
             GUILayout.EndHorizontal();
-
 
             if (abortValues.armed && !abortValues.exceedingAoA)
                 GUI.enabled = true;
@@ -378,15 +378,15 @@ namespace BobsPanicBox
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             GUILayout.Space(10);
+
             GUILayout.BeginHorizontal();
             GUI.enabled = true;
             if (GUILayout.Button("Reset all values to defaults", GUILayout.Width(250)))
             {
-                ResetToDefault(ref abortValues);
+                abortValues.ResetToDefault();
             }
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
-
 
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Close"))
@@ -431,33 +431,6 @@ namespace BobsPanicBox
             }
             GUILayout.EndHorizontal();
             GUI.DragWindow();
-        }
-
-
-        internal static void ResetToDefault(ref AbortValues abortValues)
-        {
-            if (HighLogic.LoadedSceneIsFlight)
-                abortValues.armed = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().activeAtLaunch;
-            else
-            {
-                if (HighLogic.LoadedSceneIsEditor && EditorDriver.editorFacility == EditorFacility.VAB)
-                    abortValues.armed = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().activeInVAB;
-                if (HighLogic.LoadedSceneIsEditor && EditorDriver.editorFacility == EditorFacility.SPH)
-                    abortValues.armed = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().activeInSPH;
-            }
-            abortValues.vertSpeedTriggerEnabled = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().negativeVelDetection;
-            abortValues.gForceTriggerEnabled = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().highGDetection;
-            abortValues.vertSpeed = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().defaultNegVel;
-            abortValues.exceedingAoA = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().exceedingAoA;
-            abortValues.maxAoA = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().maxAoA;
-            abortValues.gForceTrigger = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().defaultG;
-            abortValues.explosiveTriggerEnabled = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().explosionDetection;
-            abortValues.disableAfter = (int)HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().disableAfter;
-            abortValues.actionAfterTimeout = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().actionAfterTimeout;
-            abortValues.maxTimeoutActionG = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().maxTimeoutActionG;
-            abortValues.postAbortAction = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().postAbortAction;
-            abortValues.postAbortDelay = (int)HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().postAbortDelay;
-            abortValues.delayPostAbortUntilSafe = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().delayPostAbortUntilSafe;
-        }
+        }       
     }
 }

@@ -86,7 +86,9 @@ namespace BobsPanicBox
 
         new void Start()
         {
+            Log.Info("BPB_VesselModule.Start");
             av = new AbortValues();
+            SetAllValues(av);
             Start2();
             base.Start();
         }
@@ -135,7 +137,7 @@ namespace BobsPanicBox
                 this.postAbortAction = a.postAbortAction;
                 this.postAbortDelay = a.postAbortDelay;
                 this.delayPostAbortUntilSafe = a.delayPostAbortUntilSafe;
-                av = a;
+                av = (AbortValues)a.Clone();
 
                 foreach (var p in this.vessel.Parts)
                 {

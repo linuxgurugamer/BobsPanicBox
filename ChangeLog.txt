@@ -1,3 +1,12 @@
+0.0.1.9
+	Fixed nullref which was causing an empty popup when toolbar buttons were disabled and the window was opened using the PAW menu
+	Fixed resetting to default values for the following:
+		ignoreAoAAboveAltitudeKm
+		disableAtAltitudeKm 
+	Fixed default values not being set properly upon first run in Flight mode
+	Fixed default values not being set properly upon first run in Editor mode
+	Moved ResetToDefault() method into the AbortValues class to simplify code a bit
+
 0.0.1.8
 	Added parameter to ignore AoA above specified altitude
 

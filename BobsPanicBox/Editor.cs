@@ -11,7 +11,8 @@ namespace BobsPanicBox
 
         internal Editor()
         {
-            av = new AbortValues(this);
+            Log.Info("Editor ctor");
+            av = new AbortValues();
         }
 
         public void SaveCurrent(Module_BobsPanicBox m)
@@ -41,7 +42,7 @@ namespace BobsPanicBox
         {
             if (a != null)
             {
-                av = a;
+                av = (AbortValues)a.Clone();
                 foreach (var p in EditorLogic.fetch.ship.parts)
                 {
                     var m = p.FindModuleImplementing<Module_BobsPanicBox>();

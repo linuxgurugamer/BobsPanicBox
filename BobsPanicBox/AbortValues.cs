@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BobsPanicBox
 {
-    public class AbortValues
+    public class AbortValues : ICloneable
     {
         public bool armed;
         public string status;
@@ -32,18 +32,58 @@ namespace BobsPanicBox
         Flight flightParent = null;
         Editor editorParent = null;
 
-       // Module_BobsPanicBox moduleBPB = null;
+        public AbortValues()
+        {
+            ResetToDefault();
+        }
 
-   
-        internal AbortValues()
-        { }
+        public Object Clone()
+        {
+            AbortValues av = (AbortValues)this.MemberwiseClone();
+            return av;
+        }
+
+        internal void ResetToDefault()
+        {
+            if (HighLogic.LoadedScene != GameScenes.FLIGHT && HighLogic.LoadedScene != GameScenes.EDITOR)
+                return;
+            Log.Info("AbortValues.ResetToDefault");
+            if (HighLogic.LoadedSceneIsFlight)
+                armed = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().activeAtLaunch;
+            else
+            {
+                if (HighLogic.LoadedSceneIsEditor && EditorDriver.editorFacility == EditorFacility.VAB)
+                    armed = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().activeInVAB;
+                if (HighLogic.LoadedSceneIsEditor && EditorDriver.editorFacility == EditorFacility.SPH)
+                    armed = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().activeInSPH;
+            }
+            vertSpeedTriggerEnabled = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().negativeVelDetection;
+            gForceTriggerEnabled = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().highGDetection;
+            vertSpeed = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().defaultNegVel;
+            exceedingAoA = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().exceedingAoA;
+            maxAoA = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().maxAoA;
+            gForceTrigger = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().defaultG;
+            explosiveTriggerEnabled = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().explosionDetection;
+            disableAfter = (int)HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().disableAfter;
+            actionAfterTimeout = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().actionAfterTimeout;
+            maxTimeoutActionG = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().maxTimeoutActionG;
+            postAbortAction = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().postAbortAction;
+            postAbortDelay = (int)HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().postAbortDelay;
+            delayPostAbortUntilSafe = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().delayPostAbortUntilSafe;
+            ignoreAoAAboveAltitudeKm = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().ignoreAoAAboveAltitudeKm;
+            disableAtAltitudeKm = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().disableAtAltitudeKm;
+        }
+
+ 
         internal AbortValues(Flight f)
         {
             flightParent = f;
+            ResetToDefault();
         }
         internal AbortValues(Editor f)
         {
             editorParent = f;
+            ResetToDefault();
         }
 
         public void SetAllValues(AbortValues av)

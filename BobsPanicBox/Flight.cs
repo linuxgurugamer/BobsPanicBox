@@ -11,7 +11,7 @@ namespace BobsPanicBox
 
         internal Flight()
         {
-            av = new AbortValues(this);
+            av = new AbortValues();
         }
         public void SaveCurrent(Module_BobsPanicBox m)
         {
@@ -26,7 +26,7 @@ namespace BobsPanicBox
         {
             if (a != null)
             {
-                av = a;
+                av = (AbortValues)a.Clone();
                 foreach (var p in vessel.parts)
                 {
                     var m = p.FindModuleImplementing<Module_BobsPanicBox>();
