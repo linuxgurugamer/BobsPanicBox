@@ -10,17 +10,6 @@ using ClickThroughFix;
 
 namespace BobsPanicBox
 {
-    [KSPAddon(KSPAddon.Startup.MainMenu, true)]
-    public class RegisterToolbar : MonoBehaviour
-    {
-        void Start()
-        {
-            ToolbarControl.RegisterMod(BPB_Editor_Window.MODID, BPB_Editor_Window.MODNAME);
-        }
-    }
-
-
-
     [KSPAddon(KSPAddon.Startup.FlightAndEditor, false)]
     internal class BPB_Editor_Window : MonoBehaviour
     {
@@ -31,7 +20,7 @@ namespace BobsPanicBox
         const int HEIGHT = 200;
 
         Rect bpbWinRect = new Rect((Screen.width - WIDTH) / 2, (Screen.height - HEIGHT) / 2, WIDTH, HEIGHT);
-        internal AbortValues abortValues = new AbortValues();
+        internal AbortValues abortValues; // = new AbortValues();
 
         internal const string MODID = "BobsPanicBox_NS";
         internal const string MODNAME = "Bob's Panic Box";
@@ -177,7 +166,7 @@ namespace BobsPanicBox
                     if (m != null)
                     {
                         if (m.av == null)
-                            Log.Info("in ToggleOn, m.av is null");
+                            Log.Error("in ToggleOn, m.av is null");
                         EnableWindow(m.av);
                         return;
                     }

@@ -86,9 +86,9 @@ namespace BobsPanicBox
 
         new void Start()
         {
-            Log.Info("BPB_VesselModule.Start");
             av = new AbortValues();
-            SetAllValues(av);
+
+           // SetAllValues(av);
             Start2();
             base.Start();
         }

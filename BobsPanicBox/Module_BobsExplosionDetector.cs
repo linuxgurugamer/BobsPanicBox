@@ -8,8 +8,6 @@ namespace BobsPanicBox
 {
     class Module_BobsExplosionDetector : PartModule
     {
-        
-
         public void OnDestroy()
         {
             if (HighLogic.LoadedSceneIsFlight)

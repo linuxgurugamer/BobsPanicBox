@@ -47,7 +47,7 @@ namespace BobsPanicBox
         {
             if (HighLogic.LoadedScene != GameScenes.FLIGHT && HighLogic.LoadedScene != GameScenes.EDITOR)
                 return;
-            Log.Info("AbortValues.ResetToDefault");
+
             if (HighLogic.LoadedSceneIsFlight)
                 armed = HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().activeAtLaunch;
             else

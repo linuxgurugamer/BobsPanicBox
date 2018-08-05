@@ -11,7 +11,6 @@ namespace BobsPanicBox
 
         internal Editor()
         {
-            Log.Info("Editor ctor");
             av = new AbortValues();
         }
 

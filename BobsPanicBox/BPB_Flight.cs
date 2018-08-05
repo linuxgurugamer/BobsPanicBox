@@ -62,10 +62,13 @@ namespace BobsPanicBox
                     //vm.armed = false;
                     armed = false;
                 }
+#if false
                 GameEvents.onPartUndock.Add(onPartUndock);
                 GameEvents.onPartUndockComplete.Add(onPartUndockComplete);
+#endif
             }
         }
+#if false
         void onPartUndock(Part p)
         {
             Log.Info("onPartUndock, part " + p.partInfo.title);
@@ -74,12 +77,13 @@ namespace BobsPanicBox
         {
             Log.Info("onPartUndockComplete, part " + p.partInfo.title);
         }
+
         void OnDestroy()
         {
             GameEvents.onPartUndock.Remove(onPartUndock);
             GameEvents.onPartUndockComplete.Remove(onPartUndockComplete);
         }
-
+#endif
 
         public void FixedUpdate()
         {
@@ -152,7 +156,6 @@ namespace BobsPanicBox
                         //if (vm.exceedingAoA && v.GetSrfVelocity().magnitude > 10 && v.missionTime > 1)
                         if (vm.exceedingAoA && v.GetSrfVelocity().magnitude > 10 && missionTime > 10 && v.altitude <= vm.ignoreAoAAboveAltitude)
                         {
-                            Log.Info("AoA check, velocity: " + v.GetSrfVelocity().magnitude + ", missionTime: " + missionTime + ", altitude: " + v.altitude + ", ignoreAoAAboveAltitude: " + vm.ignoreAoAAboveAltitude);
                             var v3d1 = Vector3d.Angle(v.GetTransform().up, v.GetSrfVelocity());
                             if (v3d1 > vm.maxAoA)
                             {

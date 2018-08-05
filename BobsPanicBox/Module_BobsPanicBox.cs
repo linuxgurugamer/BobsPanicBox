@@ -30,6 +30,7 @@ namespace BobsPanicBox
 
         [KSPField(isPersistant = true)]
         internal int ignoreAoAAboveAltitudeKm = 100;
+
         [KSPField(isPersistant = true)]
         internal int ignoreAoAAboveAltitude = 100000;
 
@@ -96,6 +97,7 @@ namespace BobsPanicBox
             if (a != null)
             {
                 this.armed = a.armed;
+    
                 this.vertSpeedTriggerEnabled = a.vertSpeedTriggerEnabled;
                 this.vertSpeed = a.vertSpeed;
 
@@ -120,7 +122,7 @@ namespace BobsPanicBox
             }
         }
 
-        void CopyOrInit()
+        public void CopyOrInit()
         {
             foreach (var p in EditorLogic.fetch.ship.parts)
             {
@@ -142,6 +144,7 @@ namespace BobsPanicBox
         {
             if (!HighLogic.LoadedSceneIsFlight && !HighLogic.LoadedSceneIsEditor)
                 return;
+
             if (HighLogic.LoadedSceneIsFlight)
             {
                 vm = this.vessel.GetComponent<BPB_VesselModule>();
@@ -226,7 +229,12 @@ namespace BobsPanicBox
                     flightInfo.av.postAbortAction = postAbortAction;
                     flightInfo.av.postAbortDelay = postAbortDelay;
                     flightInfo.av.delayPostAbortUntilSafe = delayPostAbortUntilSafe;
+                    av = (AbortValues)flightInfo.av.Clone();
                     SetAllValues(flightInfo.av);
+                    if (vm != null)
+                        vm.SetAllValues(flightInfo.av);
+                    else
+                        Log.Info("No VesselModule found");
                     flightInfo.SaveCurrent(this);
                 }
             }
