@@ -1,3 +1,10 @@
+0.0.1.12
+	Added option to use percentage of atmosphere depth to determine disableAtAltitudeKm and ignoreAoAAboveAltitudeKm
+	Added reset to settings, based on whether the percentage is used or not
+
+0.0.1.11
+	Updated .version file (Name was wrong)
+
 0.0.1.10
 	Fixed the settings not being passed to the flight scene from the editor
 

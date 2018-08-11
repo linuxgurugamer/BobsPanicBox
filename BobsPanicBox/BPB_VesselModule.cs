@@ -91,6 +91,8 @@ namespace BobsPanicBox
            // SetAllValues(av);
             Start2();
             base.Start();
+
+            //CheckAbortActionGroup.getAllActions();
         }
 
         public void SetAllActive(bool aborted, bool armed, string status)

@@ -38,6 +38,10 @@ namespace BobsPanicBox
         public bool allowChangeInFlight = false;
 
 
+        [GameParameters.CustomParameterUI("Use % of atmosphere to determine altitude",
+         toolTip = "If enabled, the 'Disable At Altitude', and 'Ignore AoA above altitude' will be based on a percentage of atmosphere depth")]
+        public bool useAtmoPercentage = false;
+
         public override void SetDifficultyPreset(GameParameters.Preset preset) { }
         public override bool Enabled(MemberInfo member, GameParameters parameters) { return true; }
         public override bool Interactible(MemberInfo member, GameParameters parameters) { return true; }
@@ -81,6 +85,8 @@ namespace BobsPanicBox
         [GameParameters.CustomIntParameterUI("Ignore AoA above altitude (km)", minValue = 1, maxValue = 100)]
         public int ignoreAoAAboveAltitudeKm = 100;
 
+        [GameParameters.CustomIntParameterUI("Ignore AoA above altitude (%)", minValue = 1, maxValue = 100)]
+        public int ignoreAoAAboveAltitudePercentage = 50;
 
         [GameParameters.CustomIntParameterUI("Max AoA", minValue = 1, maxValue = 180)]
         public int maxAoA = 20;
@@ -89,9 +95,16 @@ namespace BobsPanicBox
             toolTip = "Disable Bob's Panic Box after this many minutes of flight")]
         public int disableAfter = 600;
 
+
+
+
         [GameParameters.CustomIntParameterUI("Disable at altitude (km)", minValue = 1, maxValue = 100,
-            toolTip = "Disable when this altitude is reached")]
+               toolTip = "Disable when this altitude is reached")]
         public int disableAtAltitudeKm = 100;
+
+        [GameParameters.CustomIntParameterUI("Disable at altitude (%)", minValue = 1, maxValue = 100,
+               toolTip = "Disable when this altitude is reached")]
+        public int disableAtAltitudePercent = 66;
 
         [GameParameters.CustomIntParameterUI("Action after timeout", minValue = 0, maxValue = 10,
             toolTip = "Trigger this action after the timeout, 0 = none")]
@@ -115,8 +128,54 @@ namespace BobsPanicBox
         public bool delayPostAbortUntilSafe = false;
 
 
-        public override void SetDifficultyPreset(GameParameters.Preset preset) { }
-        public override bool Enabled(MemberInfo member, GameParameters parameters) { return true; }
+        public override void SetDifficultyPreset(GameParameters.Preset preset)
+        {
+            explosionDetection = false;
+            negativeVelDetection = false;
+            defaultNegVel = -40;
+            highGDetection = false;
+            defaultG = 6;
+            exceedingAoA = false;
+            maxAoA = 20;
+            disableAfter = 600;
+            maxTimeoutActionG = 10f;
+            actionAfterTimeout = 0;
+            postAbortAction = 0;
+            postAbortDelay = 10;
+            delayPostAbortUntilSafe = false;
+
+            if (HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().useAtmoPercentage)
+            {
+                ignoreAoAAboveAltitudePercentage = 50;
+                disableAtAltitudePercent = 66;
+            }
+            else
+            {
+                ignoreAoAAboveAltitudeKm = 100;
+                disableAtAltitudeKm = 100;
+            }
+        }
+
+        public override bool Enabled(MemberInfo member, GameParameters parameters)
+        {
+            if (HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().useAtmoPercentage)
+            {
+                disableAtAltitudeKm = disableAtAltitudePercent;
+                ignoreAoAAboveAltitudeKm = ignoreAoAAboveAltitudePercentage;
+
+                if (member.Name == "disableAtAltitudeKm" || member.Name == "ignoreAoAAboveAltitudeKm")                
+                    return false;
+                if (member.Name == "disableAtAltitudePercent" || member.Name == "ignoreAoAAboveAltitudePercentage")
+                    return true;
+            } else
+            {
+                if (member.Name == "disableAtAltitudeKm" || member.Name == "ignoreAoAAboveAltitudeKm")
+                    return true;
+                if (member.Name == "disableAtAltitudePercent" || member.Name == "ignoreAoAAboveAltitudePercentage")
+                    return false;
+            }
+            return true;
+        }
         public override bool Interactible(MemberInfo member, GameParameters parameters) { return true; }
         public override IList ValidValues(MemberInfo member) { return null; }
     }

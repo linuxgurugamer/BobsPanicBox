@@ -66,6 +66,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AssemblyVersion.tt</DependentUpon>
     </Compile>
+    <Compile Include="CheckAbortActionGroup.cs" />
     <Compile Include="Editor.cs" />
     <Compile Include="Flight.cs" />
     <Compile Include="Module_BobsPanicBox.cs" />

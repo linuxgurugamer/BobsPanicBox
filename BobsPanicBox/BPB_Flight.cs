@@ -35,14 +35,15 @@ namespace BobsPanicBox
             var vm2 = v2.GetComponent<BPB_VesselModule>();
             vm1.missionTime = Math.Max(v1.missionTime, v2.missionTime);
             vm2.missionTime = vm1.missionTime;
-        }
-
-
+        }        
     }
+
     partial class BPB_VesselModule : VesselModule
     {
         //Vessel lastActiveVessel;
         //BPB_VesselModule vm;
+
+
 
         bool timeoutInProgress = false;
 
@@ -51,6 +52,13 @@ namespace BobsPanicBox
             if (HighLogic.LoadedSceneIsFlight)
             {
                 Vessel v = FlightGlobals.ActiveVessel;
+
+                if (HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().useAtmoPercentage)
+                {
+                    disableAtAltitude = (int)(disableAtAltitudeKm * v.mainBody.atmosphereDepth / 100);
+                    ignoreAoAAboveAltitude = (int)(ignoreAoAAboveAltitudeKm * v.mainBody.atmosphereDepth / 100);
+                }
+     
                 //lastActiveVessel = v;
                 //vm = v.GetComponent<BPB_VesselModule>();
 
@@ -116,7 +124,7 @@ namespace BobsPanicBox
                     // Check to be sure it should still be active
                     //if (v.missionTime <= vm.disableAfter && v.altitude <= vm.disableAtAltitudeKm * 1000)
                     //if (v.missionTime <= disableAfter && v.altitude <= disableAtAltitudeKm * 1000)
-                    if (this.missionTime <= disableAfter && v.altitude <= disableAtAltitudeKm * 1000)
+                    if (this.missionTime <= disableAfter && v.altitude <= disableAtAltitude)
                     {
                         // check for negative vertical speed
                         //if (v.verticalSpeed < vm.vertSpeed && vm.vertSpeedTriggerEnabled)

@@ -1,5 +1,5 @@
 {
-  "NAME": "IFILS",
+  "NAME": "Bob's Panic Box",
   "URL": "https://raw.githubusercontent.com/linuxgurugamer/BobsPanicBox/master/BobsPanicBox.version",
     "DOWNLOAD": "https://github.com/linuxgurugamer/BobsPanicBox/releases",
   "GITHUB": {
@@ -10,7 +10,7 @@
     "MAJOR": 0,
     "MINOR": 0,
     "PATCH": 1,
-    "BUILD": 10
+    "BUILD": 12
   },
   "KSP_VERSION": {
     "MAJOR": 1,
