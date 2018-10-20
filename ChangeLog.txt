@@ -1,3 +1,6 @@
+0.0.1.13
+	Updated for 1.5 rebuild
+
 0.0.1.12
 	Added option to use percentage of atmosphere depth to determine disableAtAltitudeKm and ignoreAoAAboveAltitudeKm
 	Added reset to settings, based on whether the percentage is used or not
