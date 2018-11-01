@@ -280,7 +280,7 @@ namespace BobsPanicBox
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            if (HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().useAtmoPercentage)
+            if (HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().useAtmoPercentage)
                 GUILayout.Label("Ignore AoA above altitude (%):");
             else
                 GUILayout.Label("Ignore AoA above altitude (km):");
@@ -311,7 +311,7 @@ namespace BobsPanicBox
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            if (HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().useAtmoPercentage)
+            if (HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().useAtmoPercentage)
                 GUILayout.Label("Disable at altitude (%):");
             else
                 GUILayout.Label("Disable at altitude (km):");

@@ -1,3 +1,6 @@
+0.0.1.x
+	Fixed bug when creating a new game and going into difficulty settings due to Settings not being initialized
+
 0.0.1.14
 	Fixed min version
 

@@ -38,9 +38,6 @@ namespace BobsPanicBox
         public bool allowChangeInFlight = false;
 
 
-        [GameParameters.CustomParameterUI("Use % of atmosphere to determine altitude",
-         toolTip = "If enabled, the 'Disable At Altitude', and 'Ignore AoA above altitude' will be based on a percentage of atmosphere depth")]
-        public bool useAtmoPercentage = false;
 
         public override void SetDifficultyPreset(GameParameters.Preset preset) { }
         public override bool Enabled(MemberInfo member, GameParameters parameters) { return true; }
@@ -59,6 +56,9 @@ namespace BobsPanicBox
 
 
 
+        [GameParameters.CustomParameterUI("Use % of atmosphere to determine altitude",
+         toolTip = "If enabled, the 'Disable At Altitude', and 'Ignore AoA above altitude' will be based on a percentage of atmosphere depth")]
+        public bool useAtmoPercentage = false;
 
         [GameParameters.CustomParameterUI("Explosion Detection active at launch",
             toolTip = "Abort if an explosion is detected on the vessel")]
@@ -144,7 +144,7 @@ namespace BobsPanicBox
             postAbortDelay = 10;
             delayPostAbortUntilSafe = false;
 
-            if (HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().useAtmoPercentage)
+            if (useAtmoPercentage)
             {
                 ignoreAoAAboveAltitudePercentage = 50;
                 disableAtAltitudePercent = 66;
@@ -158,7 +158,7 @@ namespace BobsPanicBox
 
         public override bool Enabled(MemberInfo member, GameParameters parameters)
         {
-            if (HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options>().useAtmoPercentage)
+            if (useAtmoPercentage)
             {
                 disableAtAltitudeKm = disableAtAltitudePercent;
                 ignoreAoAAboveAltitudeKm = ignoreAoAAboveAltitudePercentage;
