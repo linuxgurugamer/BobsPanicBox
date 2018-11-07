@@ -1,3 +1,6 @@
+0.0.1.17
+	Version bump to fix .version file
+
 0.0.1.16
 	Rebuild with bug fix for 1.5.1
 
