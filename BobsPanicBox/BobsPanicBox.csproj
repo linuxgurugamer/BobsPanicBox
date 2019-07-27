@@ -69,6 +69,7 @@
     <Compile Include="CheckAbortActionGroup.cs" />
     <Compile Include="Editor.cs" />
     <Compile Include="Flight.cs" />
+    <Compile Include="InstallChecker.cs" />
     <Compile Include="Module_BobsPanicBox.cs" />
     <Compile Include="Module_BobsExplosionDetector.cs" />
     <Compile Include="Log.cs" />
