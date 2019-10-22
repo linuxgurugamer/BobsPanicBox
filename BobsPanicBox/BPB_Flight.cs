@@ -55,7 +55,7 @@ namespace BobsPanicBox
 
                 if (HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().useAtmoPercentage)
                 {
-                    disableAtAltitude = (int)(disableAtAltitudeKm * v.mainBody.atmosphereDepth / 100);
+                    disableAtAltitude = (int)(HighLogic.CurrentGame.Parameters.CustomParams<BPB_Options2>().disableAtAltitudePercent * v.mainBody.atmosphereDepth / 100);
                     ignoreAoAAboveAltitude = (int)(ignoreAoAAboveAltitudeKm * v.mainBody.atmosphereDepth / 100);
                 }
      
