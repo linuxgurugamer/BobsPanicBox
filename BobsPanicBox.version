@@ -1,6 +1,6 @@
 {
   "NAME": "Bob's Panic Box",
-  "URL": "http://ksp.spacetux.net/avc/BobsPanicBox",
+  "URL": "https://raw.githubusercontent.com/linuxgurugamer/BobsPanicBox/refs/heads/master/BobsPanicBox.version",
   "DOWNLOAD": "https://github.com/linuxgurugamer/BobsPanicBox/releases",
   "GITHUB": {
     "USERNAME": "linuxgurugamer",
@@ -10,7 +10,7 @@
     "MAJOR": 0,
     "MINOR": 0,
     "PATCH": 2,
-    "BUILD": 4
+    "BUILD": 5
   },
   "KSP_VERSION": {
     "MAJOR": 1,
@@ -21,5 +21,10 @@
     "MAJOR": 1,
     "MINOR": 12,
     "PATCH": 0
+  },
+  "KSP_VERSION_MAX": {
+    "MAJOR": 1,
+    "MINOR": 12,
+    "PATCH": 99
   }
 }
